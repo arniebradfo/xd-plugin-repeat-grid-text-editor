@@ -1,0 +1,27 @@
+{
+    "id": "YOUR_ID_HERE",
+    "name": "Repeat Grid Tabber",
+    "version": "0.1.0",
+    "description": "Quickly tab through and edit text in a repeat grid in Adobe XD",
+    "summary": "...",
+    "languages": [
+        "en"
+    ],
+    "author": "James Bradford",
+    "helpUrl": "https://github.com/arniebradfo/xd-plugin-repeat-grid-tabber",
+    "host": {
+        "app": "XD",
+        "minVersion": "13.0"
+    },
+    "uiEntryPoints": [
+        {
+            "type": "menu",
+            "label": "Tab to Next",
+            "commandId": "tabToNext",
+            "shortcut": {
+                "mac": "Cmd+Alt+G",
+                "win": "Ctrl+Alt+G"
+            }
+        }
+    ]
+}
