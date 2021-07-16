@@ -16,8 +16,13 @@
     "uiEntryPoints": [
         {
             "type": "menu",
-            "label": "Tab to Next",
-            "commandId": "tabToNext",
+            "label": "Tab To Next",
+            "commandId": "tabToNext"
+        },
+        {
+            "type": "menu",
+            "label": "Edit Repeat Content",
+            "commandId": "editRepeatContent",
             "shortcut": {
                 "mac": "Cmd+Alt+G",
                 "win": "Ctrl+Alt+G"
