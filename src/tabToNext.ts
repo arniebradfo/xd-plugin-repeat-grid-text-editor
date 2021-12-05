@@ -1,7 +1,6 @@
-'use strict';
-const { RepeatGrid } = require("scenegraph");
+import { RepeatGrid } from "scenegraph";
 
-function tabToNext(selection) {
+export function tabToNext(selection) {
     console.log(selection);
 
     const selectedRepeatGridItem = selection.items[0]
@@ -73,7 +72,3 @@ function indexOfChildInParent(childNode) {
     })
     return index
 }
-
-module.exports = {
-    tabToNext
-};

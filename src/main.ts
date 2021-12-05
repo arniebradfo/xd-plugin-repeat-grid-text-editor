@@ -1,9 +1,8 @@
-const { tabToNext } = require('./tabToNext')
-const { editRepeatContent } = require('./editRepeatContent')
+import { tabToNext } from "./tabToNext";
+import { editRepeatContent } from "./editRepeatContent";
 
-module.exports = {
-    commands: {
-        tabToNext,
-        editRepeatContent,
-    }
-};
+export const commands = {
+    tabToNext,
+    editRepeatContent,
+}
+

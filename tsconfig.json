@@ -5,6 +5,7 @@
     "baseUrl": "./",
     "sourceMap": true,
     "moduleResolution": "node",
+    "outDir": "dist",
     "lib": [
       "es2015",
       "dom"
