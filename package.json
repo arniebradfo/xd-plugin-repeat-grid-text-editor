@@ -4,7 +4,9 @@
   "description": "Quickly tab through and edit text in a repeat grid in Adobe XD",
   "main": "main.js",
   "scripts": {
-    "test": "echo 'no tests'"
+    "start": "npm run dev",
+    "dev": "tsc -watch",
+    "build": "tsc -build"
   },
   "repository": {
     "type": "git",
@@ -23,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/arniebradfo/xd-plugin-repeat-grid-tabber/issues"
   },
-  "homepage": "https://github.com/arniebradfo/xd-plugin-repeat-grid-tabber#readme"
+  "homepage": "https://github.com/arniebradfo/xd-plugin-repeat-grid-tabber#readme",
+  "dependencies": {
+    "typescript": "^4.5.2"
+  }
 }

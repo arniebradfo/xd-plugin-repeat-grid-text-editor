@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "baseUrl": "./",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "typeRoots": [
+      "../xd-typings/"
+    ]
+  },
+  "files": [
+    "editRepeatContent.ts"
+  ]
+}
