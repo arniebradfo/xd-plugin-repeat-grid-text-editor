@@ -1,4 +1,4 @@
-import { CommandHandler, RepeatGrid } from "scenegraph";
+import { CommandHandler, RepeatGrid, SceneNode, Text } from "scenegraph";
 
 export const tabToNext: CommandHandler = function (selection) {
     console.log(selection);
@@ -8,26 +8,24 @@ export const tabToNext: CommandHandler = function (selection) {
     // TODO: multiple selection.items?
 
     // bubble up the SceneGraph, recording the guid of the parentNode and the index of the currentNode, stopping at the firstRepeatGrid
-    const [repeatGrid, pathFromSelected] = findPathToAncestorOfType(selectedRepeatGridItem, RepeatGrid)
-    console.log(pathFromSelected);
-
-    if (repeatGrid == null)
-        return false
+    const findPathToRepeatGridAncestor = findPathToAncestorOfType<RepeatGrid>(selectedRepeatGridItem, RepeatGrid)
+    if (!findPathToRepeatGridAncestor) return false // not a child of RepeatGrid
+    const [repeatGrid, pathFromSelected] = findPathToRepeatGridAncestor
 
     // increment the root.childIndex to select the next element
     let selectedCellIndex = pathFromSelected[0]
-    
+
     // TODO: for top2bottom traversal, increment by rowCount+1
     selectedCellIndex = selectedCellIndex + 1
-    
+
     // if were' at the last item restart from the first
     if (selectedCellIndex === repeatGrid.children.length)
         selectedCellIndex = 0
-    
+
     pathFromSelected[0] = selectedCellIndex
 
     // traverse the Repeat grid to find the next item
-    const nextItemToSelect = findDecedentFromPath(pathFromSelected, repeatGrid)
+    const nextItemToSelect = findDecedentFromPath(pathFromSelected, repeatGrid) as Text
     // TODO: if null check ?
     console.log(nextItemToSelect.text);
 
@@ -37,7 +35,7 @@ export const tabToNext: CommandHandler = function (selection) {
 
 }
 
-function findDecedentFromPath(pathFromSelected, rootNode) {
+function findDecedentFromPath(pathFromSelected:number[], rootNode:SceneNode): SceneNode {
     let currentNode = rootNode
     pathFromSelected.forEach(childIndex => {
         if (currentNode == null)
@@ -47,19 +45,23 @@ function findDecedentFromPath(pathFromSelected, rootNode) {
     return currentNode
 }
 
-function findPathToAncestorOfType(node, Type) {
-    let path = []
-    let activeNode = node
+function findPathToAncestorOfType<T extends SceneNode>(
+    node: SceneNode,
+    Type: (typeof SceneNode)
+): [T, number[]] | false {
+    let path:number[] = []
+    let activeNode: SceneNode = node
     while (!(activeNode instanceof Type)) {
-        if (activeNode == null)
-            return [false, []]
+        if (activeNode == null) return false
         path.push(indexOfChildInParent(activeNode))
-        activeNode = activeNode.parent
+        activeNode = (activeNode as SceneNode).parent
     }
-    return [activeNode, path.reverse()] // activeNode is of Type
+    return [activeNode as T, path.reverse()] // activeNode is of Type
 }
 
-function indexOfChildInParent(childNode) {
+function indexOfChildInParent(
+    childNode: SceneNode
+): number {
     let index = 0
     // console.log(childNode.parent.children)
     childNode.parent.children.some((child) => {
