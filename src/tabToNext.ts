@@ -1,6 +1,6 @@
-import { RepeatGrid } from "scenegraph";
+import { CommandHandler, RepeatGrid } from "scenegraph";
 
-export function tabToNext(selection) {
+export const tabToNext: CommandHandler = function (selection) {
     console.log(selection);
 
     const selectedRepeatGridItem = selection.items[0]

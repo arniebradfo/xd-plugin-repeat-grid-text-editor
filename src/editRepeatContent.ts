@@ -1,6 +1,6 @@
-import { RootNode, XDSelection } from "scenegraph";
+import { CommandHandler, RootNode, XDSelection } from "scenegraph";
 
-export function editRepeatContent(selection: XDSelection, rootNode: RootNode) {
-    console.log({ selection, rootNode});
+export const editRepeatContent: CommandHandler = function (selection, root) {
+    console.log({ selection, root });
     // TODO: try a textarea/table solution in a panel
 }
