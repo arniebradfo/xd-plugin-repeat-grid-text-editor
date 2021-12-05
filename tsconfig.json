@@ -13,7 +13,11 @@
       "../xd-typings/"
     ]
   },
-  "files": [
-    "editRepeatContent.ts"
-  ]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/.*/"
+  ],
 }
