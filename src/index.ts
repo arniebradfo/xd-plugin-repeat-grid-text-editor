@@ -1,12 +1,11 @@
-import { tabToNext } from "./tabToNext";
-import { editRepeatContent } from "./editRepeatContent";
+import { createTextDataSeries } from "./createTextDataSeries";
+import { logSelection } from "./logSelection";
 import { CommandHandler } from "scenegraph";
 type CommandId = string
 
 export const commands: {
     [key: CommandId]: CommandHandler
 } = {
-    tabToNext,
-    editRepeatContent,
+    createTextDataSeries,
+    editRepeatContent: logSelection,
 }
-

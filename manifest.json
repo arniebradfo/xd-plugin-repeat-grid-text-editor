@@ -16,13 +16,16 @@
     "uiEntryPoints": [
         {
             "type": "menu",
-            "label": "Tab To Next",
-            "commandId": "tabToNext"
+            "label": "Create Text Data Series",
+            "commandId": "createTextDataSeries",
+            "shortcut": {
+                "mac": "Ctrl+A"
+            }
         },
         {
             "type": "menu",
-            "label": "Edit Repeat Content",
-            "commandId": "editRepeatContent",
+            "label": "Log Selection",
+            "commandId": "logSelection",
             "shortcut": {
                 "mac": "Cmd+Alt+G",
                 "win": "Ctrl+Alt+G"

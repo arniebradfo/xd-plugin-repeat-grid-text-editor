@@ -1,7 +1,7 @@
 import { CommandHandler, RepeatGrid, SceneNode, Text } from "scenegraph";
 
-export const tabToNext: CommandHandler = function (selection) {
-    console.log(selection);
+export const createTextDataSeries: CommandHandler = function (selection, root) {
+    console.log({selection, root});
 
     const selectedRepeatGridItem = selection.items[0]
     // check to see if text?
@@ -11,6 +11,8 @@ export const tabToNext: CommandHandler = function (selection) {
     const findPathToRepeatGridAncestor = findPathToAncestorOfType<RepeatGrid>(selectedRepeatGridItem, RepeatGrid)
     if (!findPathToRepeatGridAncestor) return false // not a child of RepeatGrid
     const [repeatGrid, pathFromSelected] = findPathToRepeatGridAncestor
+
+    console.log(repeatGrid);
 
     // increment the root.childIndex to select the next element
     let selectedCellIndex = pathFromSelected[0]
@@ -39,7 +41,7 @@ function findDecedentFromPath(pathFromSelected:number[], rootNode:SceneNode): Sc
     let currentNode = rootNode
     pathFromSelected.forEach(childIndex => {
         if (currentNode == null)
-            return false
+            return false 
         currentNode = currentNode.children.at(childIndex)
     })
     return currentNode
