@@ -16,21 +16,25 @@ export const createTextDataSeries: CommandHandler = function (selection, root) {
     // traverse repeatGrid first child and set of Text Nodes 
     const exampleRepeatCell = repeatGrid.children.at(0)
     const leaves = getSceneNodeLeaves(exampleRepeatCell)
+    console.log({ leaves });
 
     // transform leaves into textDataSeries
-    const repeatGridTextDataSeries: { name: string, textDataSeries: string[]}[] = []
+    const repeatGridTextDataSeries: { name: string, textDataSeries: string[] }[] = []
     leaves.forEach(leaf => {
         const textDataSeries = []
         repeatGrid.children.forEach(repeatCell => {
-            textDataSeries.push((findDecedentFromPath(repeatCell, leaf.indexPath) as Text).text)
+            textDataSeries.push((findDescendentFromPath(repeatCell, leaf.indexPath) as Text).text)
         })
         const name = (leaf.node as Text).name // leaf.node.hasDefaultName may be useful?
         repeatGridTextDataSeries.push({
             name,
             textDataSeries
-        })   
+        })
     });
     console.log(repeatGridTextDataSeries);
+
+    const attachNode = findDescendentFromPath(exampleRepeatCell, leaves[0].indexPath) as Text
+    repeatGrid.attachTextDataSeries(attachNode, ['this', 'is', 'a', 'test'])
     
 }
 
@@ -54,7 +58,7 @@ function getSceneNodeLeaves(
     return leaves.flat()
 }
 
-function findDecedentFromPath(
+function findDescendentFromPath(
     node: SceneNode,
     indexPath: number[],
 ): SceneNode {
