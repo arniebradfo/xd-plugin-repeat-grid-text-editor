@@ -15,6 +15,11 @@
     },
     "uiEntryPoints": [
         {
+            "type": "panel",
+            "label": "Text Data Series Editor",
+            "panelId": "textDataSeriesEditor"
+        },
+        {
             "type": "menu",
             "label": "Create Text Data Series",
             "commandId": "createTextDataSeries",

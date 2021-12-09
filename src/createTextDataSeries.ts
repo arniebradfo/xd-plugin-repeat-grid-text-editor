@@ -33,9 +33,10 @@ export const createTextDataSeries: CommandHandler = function (selection, root) {
     });
     console.log(repeatGridTextDataSeries);
 
-    const attachNode = findDescendentFromPath(exampleRepeatCell, leaves[0].indexPath) as Text
-    repeatGrid.attachTextDataSeries(attachNode, ['this', 'is', 'a', 'test'])
-    
+    // testing attachTextDataSeries
+    // const attachNode = findDescendentFromPath(exampleRepeatCell, leaves[0].indexPath) as Text
+    // repeatGrid.attachTextDataSeries(attachNode, ['this', 'is', 'a', 'test'])
+
 }
 
 type NodeAndPath<T extends SceneNode = SceneNode> = {
