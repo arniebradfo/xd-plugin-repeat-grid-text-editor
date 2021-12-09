@@ -32,27 +32,6 @@ export const createTextDataSeries: CommandHandler = function (selection, root) {
     });
     console.log(repeatGridTextDataSeries);
     
-    // // increment the root.childIndex to select the next element
-    // let selectedCellIndex = pathFromSelected[0]
-
-    // // TODO: for top2bottom traversal, increment by rowCount+1
-    // selectedCellIndex = selectedCellIndex + 1
-
-    // // if were' at the last item restart from the first
-    // if (selectedCellIndex === repeatGrid.children.length)
-    //     selectedCellIndex = 0
-
-    // pathFromSelected[0] = selectedCellIndex
-
-    // // traverse the Repeat grid to find the next item
-    // const nextItemToSelect = findDecedentFromPath(repeatGrid, pathFromSelected) as Text
-    // // TODO: if null check ?
-    // console.log(nextItemToSelect.text);
-
-    // TODO: Update Selection ? // https://adobexdplatform.com/plugin-docs/reference/selection.html
-    // This is not possible due to plugin actions being limited to the editContext 
-    // https://adobexdplatform.com/plugin-docs/reference/core/edit-context.html
-
 }
 
 type NodeAndPath<T extends SceneNode = SceneNode> = {
