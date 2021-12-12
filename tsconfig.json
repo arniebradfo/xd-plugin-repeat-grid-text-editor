@@ -1,24 +1,31 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "module": "commonjs",
-    "baseUrl": "./",
-    "sourceMap": true,
-    "moduleResolution": "node",
     "outDir": "dist",
+    "rootDir": "src",
+    "sourceMap": true,
+    // "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "moduleResolution": "node",
+    "module": "commonJS",
     "lib": [
       "es2019",
       "dom"
     ],
+    "target": "es2015",
+    "jsx": "react",
+    "baseUrl": "./",
     "typeRoots": [
       "../xd-typings/"
     ]
   },
+  
+  // "files": ["src/index.ts", "node_modules/react/"],
   "include": [
     "src"
   ],
   "exclude": [
-    "**/node_modules",
-    "**/.*/"
+    "node_modules",
+    "dist"
   ],
 }
