@@ -1,7 +1,7 @@
 import { CommandHandler, GraphicNode, RepeatGrid, SceneNode, Text } from "scenegraph";
 
 export const createTextDataSeries: CommandHandler = function (selection, root) {
-    console.log({ selection, root });
+    // console.log({ selection, root });
 
     const selectedRepeatGridItem = selection.items[0]
     // check to see if text?
@@ -11,12 +11,12 @@ export const createTextDataSeries: CommandHandler = function (selection, root) {
     const findPathToRepeatGridAncestor = findPathToAncestorOfType<RepeatGrid>(selectedRepeatGridItem, RepeatGrid)
     if (!findPathToRepeatGridAncestor) return false // not a child of RepeatGrid
     const { node: repeatGrid, indexPath: pathFromSelected } = findPathToRepeatGridAncestor
-    console.log(repeatGrid)
+    // console.log(repeatGrid)
 
     // traverse repeatGrid first child and set of Text Nodes 
     const exampleRepeatCell = repeatGrid.children.at(0)
     const leaves = getSceneNodeLeaves(exampleRepeatCell)
-    console.log({ leaves });
+    // console.log({ leaves });
 
     // transform leaves into textDataSeries
     const repeatGridTextDataSeries: { name: string, textDataSeries: string[] }[] = []
@@ -27,15 +27,13 @@ export const createTextDataSeries: CommandHandler = function (selection, root) {
         })
         const name = (leaf.node as Text).name // leaf.node.hasDefaultName may be useful?
         repeatGridTextDataSeries.push({
+            ...leaf,
             name,
             textDataSeries
         })
     });
-    console.log(repeatGridTextDataSeries);
 
-    // testing attachTextDataSeries
-    // const attachNode = findDescendentFromPath(exampleRepeatCell, leaves[0].indexPath) as Text
-    // repeatGrid.attachTextDataSeries(attachNode, ['this', 'is', 'a', 'test'])
+    return { repeatGridTextDataSeries, repeatGrid, exampleRepeatCell }
 
 }
 
