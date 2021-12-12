@@ -1,6 +1,6 @@
-import { CommandHandler, GraphicNode, RepeatGrid, SceneNode, Text } from "scenegraph";
+import { CommandHandler, GraphicNode, RepeatGrid, RootNode, SceneNode, Text, Selection } from "scenegraph";
 
-export const createTextDataSeries: CommandHandler = function (selection, root) {
+export const createTextDataSeries = function (selection: Selection, root: RootNode): RepeatGridTextDataSeries | undefined {
     // console.log({ selection, root });
 
     const selectedRepeatGridItem = selection.items[0]
@@ -9,35 +9,47 @@ export const createTextDataSeries: CommandHandler = function (selection, root) {
 
     // bubble up the SceneGraph, recording the guid of the parentNode and the index of the currentNode, stopping at the firstRepeatGrid
     const findPathToRepeatGridAncestor = findPathToAncestorOfType<RepeatGrid>(selectedRepeatGridItem, RepeatGrid)
-    if (!findPathToRepeatGridAncestor) return false // not a child of RepeatGrid
+    if (!findPathToRepeatGridAncestor) return // not a child of RepeatGrid
     const { node: repeatGrid, indexPath: pathFromSelected } = findPathToRepeatGridAncestor
     // console.log(repeatGrid)
 
     // traverse repeatGrid first child and set of Text Nodes 
     const exampleRepeatCell = repeatGrid.children.at(0)
-    const leaves = getSceneNodeLeaves(exampleRepeatCell)
+    const leaves = getSceneNodeLeaves(exampleRepeatCell) as NodeAndPath<Text>[]
     // console.log({ leaves });
 
     // transform leaves into textDataSeries
-    const repeatGridTextDataSeries: { name: string, textDataSeries: string[] }[] = []
+    const textDataSeriesNodes: TextDataSeriesNode[] = []
     leaves.forEach(leaf => {
         const textDataSeries = []
         repeatGrid.children.forEach(repeatCell => {
             textDataSeries.push((findDescendentFromPath(repeatCell, leaf.indexPath) as Text).text)
         })
         const name = (leaf.node as Text).name // leaf.node.hasDefaultName may be useful?
-        repeatGridTextDataSeries.push({
+        textDataSeriesNodes.push({
             ...leaf,
             name,
             textDataSeries
         })
     });
 
-    return { repeatGridTextDataSeries, repeatGrid, exampleRepeatCell }
+    return { textDataSeriesNodes, repeatGrid }
 
 }
 
-type NodeAndPath<T extends SceneNode = SceneNode> = {
+export interface RepeatGridTextDataSeries {
+    repeatGrid: RepeatGrid,
+    textDataSeriesNodes: TextDataSeriesNode[]
+}
+
+export interface TextDataSeriesNode extends NodeAndPath<Text> {
+    name: string,
+    textDataSeries: TextDataSeries,
+}
+
+export type TextDataSeries = string[]
+
+export interface NodeAndPath<T extends SceneNode = SceneNode> {
     node: T,
     indexPath: number[]
 }
@@ -46,6 +58,8 @@ function getSceneNodeLeaves(
     node: SceneNode,
     indexPath: number[] = []
 ): NodeAndPath<GraphicNode>[] {
+    // TODO: check for Text node
+    // TODO: check for Component instance
     if (node.children.length === 0) {
         const graphicNode = node as GraphicNode
         return [{ node: graphicNode, indexPath }]

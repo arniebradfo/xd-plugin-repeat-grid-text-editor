@@ -1,31 +1,30 @@
 import { editDocument } from "application";
-import { Rectangle, RepeatGrid } from "scenegraph";
-import { createTextDataSeries } from "./createTextDataSeries";
+import { RepeatGrid } from "scenegraph";
+import { createTextDataSeries, RepeatGridTextDataSeries } from "./createTextDataSeries";
 
 // globals?
 let panel: HTMLDivElement;
-let repeatGridTextObjects;
+let repeatGridTextObjects: RepeatGridTextDataSeries | undefined;
 
 // https://www.adobe.io/xd/uxp/develop/tutorials/quick-start-panel/#create-the-ui
 function create() {
 
     function textUpdated(event) {
-        console.log(event.target.value);
-        // console.log(repeatGridTextObjects);
-        // repeatGridTextObjects.repeatGridTextDataSeries[0].textDataSeries.join('\n')
-        const { node } = repeatGridTextObjects.repeatGridTextDataSeries[0]
+        // console.log(event.target.value);
+        const { node } = repeatGridTextObjects.textDataSeriesNodes[0]
         const textDataSeries = event.target.value.split('\n').map(line => line === '' ? ' ' : line);
         console.log(textDataSeries);
 
         editDocument({ editLabel: 'edit-text' }, selection => {
             repeatGridTextObjects.repeatGrid.attachTextDataSeries(node, textDataSeries)
         })
-
     }
 
     panel = document.createElement("div"); // [9]
     panel.innerHTML = html; // [10]
     (panel.querySelector("#text-editor") as HTMLTextAreaElement).addEventListener("input", textUpdated); // [11]
+    // console.dir(panel.querySelector("#text-editor"));
+    
 
     return panel; // [12] 
 }
@@ -65,10 +64,14 @@ const html = // html
     `
 <style>${style}</style>
 
+<div id="text-list-page">
+
+</div>
+
 <form method="dialog" id="main">
     <div class="row break">
-        <sp-textarea class="textarea" id="text-editor" placeholder="edit it" multiline="true" >
-            <sp-label slot="label">{Text Field Name}</sp-label>
+        <sp-textarea class="textarea" id="text-editor" placeholder="Edit Repeat Grid Text Data Series" grows>
+            <sp-label slot="label" id="text-editor" >{Text Field Name}</sp-label>
         </sp-textarea>
     </div>
 </form>
@@ -98,7 +101,7 @@ function update(selection, root) {
         warning.className = "hide";
         if (!repeatGridTextObjects) {
             repeatGridTextObjects = createTextDataSeries(selection, root);
-            (panel.querySelector("#text-editor") as HTMLTextAreaElement).value = repeatGridTextObjects.repeatGridTextDataSeries[0].textDataSeries.join('\n')
+            (panel.querySelector("#text-editor") as HTMLTextAreaElement).value = repeatGridTextObjects.textDataSeriesNodes[0].textDataSeries.join('\n')
         }
     }
 
