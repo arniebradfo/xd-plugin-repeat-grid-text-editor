@@ -27,6 +27,10 @@
   },
   "homepage": "https://github.com/arniebradfo/xd-plugin-repeat-grid-tabber#readme",
   "dependencies": {
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.2",
+    "@types/react": "^16.8.19",
+    "@types/react-dom": "^16.8.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   }
 }

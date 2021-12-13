@@ -1,24 +1,40 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "module": "commonjs",
-    "baseUrl": "./",
-    "sourceMap": true,
-    "moduleResolution": "node",
     "outDir": "dist",
+    "rootDir": ".",
+    "sourceMap": true,
+    // "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "moduleResolution": "node",
+    "module": "CommonJS",
     "lib": [
       "es2019",
       "dom"
     ],
+    "target": "ES5",
+    "jsx": "react",
+    // "target": "es2015",
+    // "module": "commonjs",
+    // "baseUrl": ".",
+    // "sourceMap": true,
+    // "moduleResolution": "node",
+    // "outDir": "dist",
     "typeRoots": [
+      "./node_modules/@types",
       "../xd-typings/"
     ]
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "**/node_modules",
-    "**/.*/"
-  ],
+  "files": [
+    "./src/index.ts",
+    "./node_modules/react/index.js",
+    "./node_modules/react-dom/index.js"
+  ]
+  // "include": [
+  //   "src"
+  // ],
+  // "exclude": [
+  //   "node_modules",
+  //   "dist"
+  // ]
 }
