@@ -4,18 +4,20 @@
     "rootDir": "src",
     "sourceMap": true,
     // "noImplicitAny": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "moduleResolution": "node",
-    "module": "commonJS",
+    "module": "commonjs",
     "lib": [
       "es2019",
       "dom"
     ],
-    "target": "es2015",
-    "jsx": "react",
+    "target": "esnext",
+    "jsx": "preserve",
     "baseUrl": "./",
     "typeRoots": [
+      "./node_modules/@types",
       "../xd-typings/"
     ]
   },

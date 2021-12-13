@@ -1,42 +1,35 @@
 module.exports = {
-    entry: "./src/index.ts",
+    entry: ["./src/index.ts"],
     output: {
         path: __dirname,
-        filename: "main.js",
-        libraryTarget: "commonjs2",
+        filename: 'main.js',
+        libraryTarget: 'commonjs2'
     },
-    // devtool: "none",
+    devtool: 'none',
+    externals: {
+        application: 'application',
+        uxp: 'uxp',
+        scenegraph: 'scenegraph'
+    },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx']
     },
     module: {
         rules: [
             {
-                test: /\.(js|jsx)$/,
+                test: /\.(tsx|ts|js)?$/,
                 exclude: /node_modules/,
-                loader: "babel-loader",
-                options: {
-                    plugins: ["transform-react-jsx"],
-                },
+                loader: 'babel-loader'
             },
             {
-                test: /\.(ts|tsx)$/,
+                test: /\.png$/,
                 exclude: /node_modules/,
-                loader: "ts-loader",
-                // loader: "babel-loader",
-                // loader: 'ts-loader',s
+                loader: 'file-loader'
             },
-
-            // {
-            //     test: /\.css$/,
-            //     use: ["style-loader", "css-loader"],
-            // },
-        ],
-    },
-
-    externals: {
-        uxp: "uxp",
-        scenegraph: "scenegraph",
-        commands: "commands"
-    },
-};
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            }
+        ]
+    }
+}
