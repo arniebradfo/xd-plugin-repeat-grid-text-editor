@@ -2,14 +2,21 @@
   "compilerOptions": {
     "target": "es2015",
     "module": "commonjs",
-    "baseUrl": "./",
-    "sourceMap": true,
-    "moduleResolution": "node",
+    // "baseUrl": "./",
     "outDir": "dist",
-    "lib": [
-      "es2019",
-      "dom"
-    ],
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": false,
+    
+    "strict": true,
+    "noImplicitAny": false,
+
+    // "lib": [ "es2019", "dom" ],
     "typeRoots": [
       "../xd-typings/"
     ]

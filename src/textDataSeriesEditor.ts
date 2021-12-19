@@ -11,12 +11,12 @@ function create() {
 
     function textUpdated(event) {
         // console.log(event.target.value);
-        const { node } = repeatGridTextObjects.textDataSeriesNodes[0]
+        const { node } = repeatGridTextObjects!.textDataSeriesNodes[0]
         const textDataSeries = event.target.value.split('\n').map(line => line === '' ? ' ' : line);
         console.log(textDataSeries);
 
         editDocument({ editLabel: 'edit-text' }, selection => {
-            repeatGridTextObjects.repeatGrid.attachTextDataSeries(node, textDataSeries)
+            repeatGridTextObjects!.repeatGrid.attachTextDataSeries(node, textDataSeries)
         })
     }
 
@@ -24,7 +24,7 @@ function create() {
     panel.innerHTML = html; // [10]
     (panel.querySelector("#text-editor") as HTMLTextAreaElement).addEventListener("input", textUpdated); // [11]
     // console.dir(panel.querySelector("#text-editor"));
-    
+
 
     return panel; // [12] 
 }
@@ -91,6 +91,8 @@ function update(selection, root) {
     const form = document.querySelector("form"); // [3]
     const warning = document.querySelector("#warning"); // [4]
 
+    if (form == null || warning == null) return
+
     if (!selection || !(selection.items[0] instanceof RepeatGrid)) {
         // [5]
         form.className = "hide";
@@ -100,7 +102,7 @@ function update(selection, root) {
         form.className = "show";
         warning.className = "hide";
         if (!repeatGridTextObjects) {
-            repeatGridTextObjects = createTextDataSeries(selection, root);
+            repeatGridTextObjects = createTextDataSeries(selection, root) as RepeatGridTextDataSeries;
             (panel.querySelector("#text-editor") as HTMLTextAreaElement).value = repeatGridTextObjects.textDataSeriesNodes[0].textDataSeries.join('\n')
         }
     }

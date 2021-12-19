@@ -20,6 +20,11 @@
             "panelId": "textDataSeriesEditor"
         },
         {
+            "type": "panel",
+            "label": "Adobe XD Typescript",
+            "panelId": "app"
+        },
+        {
             "type": "menu",
             "label": "Create Text Data Series",
             "commandId": "createTextDataSeries",

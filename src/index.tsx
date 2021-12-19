@@ -1,8 +1,11 @@
+import * as React from 'react';
 import { createTextDataSeries } from "./createTextDataSeries";
 import { logSelection } from "./logSelection";
 import { textDataSeriesEditor } from "./textDataSeriesEditor";
 import { CommandHandler } from "scenegraph";
-type CommandId = string
+import PanelController from "./util/panel-controller";
+
+type CommandId = string;
 
 export const commands: {
     [key: CommandId]: CommandHandler
@@ -11,6 +14,9 @@ export const commands: {
     editRepeatContent: logSelection,
 }
 
+const App = () => (<p>hi there</p>);
+
 export const panels = {
-    textDataSeriesEditor
+    textDataSeriesEditor,
+    app: new PanelController(App)
 }
