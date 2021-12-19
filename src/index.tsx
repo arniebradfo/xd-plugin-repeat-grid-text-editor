@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { createTextDataSeries } from "./createTextDataSeries";
 import { logSelection } from "./logSelection";
 import { textDataSeriesEditor } from "./textDataSeriesEditor";
@@ -14,9 +13,7 @@ export const commands: {
     editRepeatContent: logSelection,
 }
 
-const App = () => (<p>hi there</p>);
-
 export const panels = {
     textDataSeriesEditor,
-    app: new PanelController(App)
+    app: new PanelController()
 }

@@ -1,46 +1,28 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-
-// TODO: add better typings here
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Selection, RootNode } from 'scenegraph';
+import { App } from '../App';
 
 export default class PanelController {
-    App: any = null;
-    instance: any = null;
+
     rootNode: HTMLDivElement = document.createElement('div');
+    
     attachment: any = null;
 
-    constructor(App: React.ReactNode) {
-        this.App = App;
-
-        // @ts-ignore
+    constructor() {
         ["show", "hide", "update"].forEach(fn => this[fn] = this[fn].bind(this));
     }
 
     show = (event: any) => {
-        // @ts-ignore
-        const { selection, root } = require("scenegraph");
-        const App = this.App;
-
         this.attachment = event.node;
         this.attachment.appendChild(this.rootNode);
-
-        if (!this.instance) {
-            this.instance = ReactDOM.render(<App selection={selection} />, this.rootNode);
-        }
-
-        this.update(selection, root);
-        console.log('show');
     }
 
     hide = () => {
         this.attachment.removeChild(this.rootNode);
-        console.log('hide');
     }
 
-    update = (selection: any, root: any) => {
-        if (this.instance && this.instance.documentStateChanged) {
-            this.instance.documentStateChanged(selection, root);
-        }
-        console.log('update');
+    update = (selection: Selection, root: RootNode) => {
+        ReactDOM.render(<App selection={selection} root={root} />, this.rootNode);
     }
 };
