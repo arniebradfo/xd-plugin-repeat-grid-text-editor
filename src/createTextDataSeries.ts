@@ -1,6 +1,6 @@
 import { CommandHandler, GraphicNode, RepeatGrid, RootNode, SceneNode, Text, Selection } from "scenegraph";
 
-export const createTextDataSeries = function (selection: Selection, root: RootNode): RepeatGridTextDataSeries | undefined {
+export const createTextDataSeries = function (selection: Selection, root?: RootNode): RepeatGridTextDataSeries | undefined {
     // console.log({ selection, root });
 
     const selectedRepeatGridItem = selection.items[0]

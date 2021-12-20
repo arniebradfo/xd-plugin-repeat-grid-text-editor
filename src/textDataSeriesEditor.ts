@@ -25,7 +25,6 @@ function create() {
     (panel.querySelector("#text-editor") as HTMLTextAreaElement).addEventListener("input", textUpdated); // [11]
     // console.dir(panel.querySelector("#text-editor"));
 
-
     return panel; // [12] 
 }
 
