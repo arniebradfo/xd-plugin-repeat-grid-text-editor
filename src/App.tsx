@@ -1,38 +1,71 @@
 import { editDocument } from 'application';
-import React, { FC, useEffect, useState } from 'react';
-import { RepeatGrid, RootNode, Selection } from 'scenegraph';
-import { createTextDataSeries, RepeatGridTextDataSeries } from './createTextDataSeries';
-import { XdReactApp } from './util/panel-controller';
+import React, { FC, HTMLProps, useEffect, useState } from 'react';
+import { RepeatGrid, } from 'scenegraph';
+import { CellLocation, createTextDataSeries, RepeatGridTextDataSeries } from './createTextDataSeries';
+import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
 
-export const App: XdReactApp = ({ selection, root, ...props }) => {
+export const App: XdReactComponent = ({ selection, root, ...props }) => {
+    // console.log({ selection, root });
 
-    const [value, setValue] = useState('')
     const [repeatGridTextDataSeries, setRepeatGridTextDataSeries] = useState<RepeatGridTextDataSeries>()
-
-    console.log({ selection, root });
+    const [selectedCellLocation, setSelectedCellLocation] = useState<CellLocation>()
 
     useEffect(() => {
-        console.log('useEffect');
+        const _repeatGridTextDataSeries = createTextDataSeries(selection)
+        setRepeatGridTextDataSeries(_repeatGridTextDataSeries);        
+        setSelectedCellLocation(_repeatGridTextDataSeries?.cellLocation)
+    }, [selection.items[0]])
 
-        if (!(selection.items[0] instanceof RepeatGrid)) {
-            console.log('setValue(undefined)');
+    const selectTextNode = (index: number) => {
+        setSelectedCellLocation({columnIndex: index})
+        setRepeatGridTextDataSeries(createTextDataSeries(selection));
+    }
 
-            setValue('')
-            return
-        }
+    return (<>
+        {repeatGridTextDataSeries?.textDataSeriesNodes.map((textDataSeriesNode, index) => (
+            <a
+                key={textDataSeriesNode.node.guid}
+                onClick={() => selectTextNode(index)}
+                style={{ color: index === selectedCellLocation?.columnIndex ? 'gray' : undefined}}
+            >
+                {textDataSeriesNode.name}
+            </a>
+        ))}
+        {(repeatGridTextDataSeries && selectedCellLocation != null) ? (
+            <TextEditorPanel
+                repeatGridTextDataSeries={repeatGridTextDataSeries}
+                selectedCellLocation={selectedCellLocation}
+                {...{ selection, root }}
+            />
+        ) : (
+            <div>Select A Text Node</div>
+        )}
+    </>)
+}
 
-        const _repeatGridTextDataSeries = createTextDataSeries(selection) as RepeatGridTextDataSeries
-        setRepeatGridTextDataSeries(_repeatGridTextDataSeries);
+export interface TextEditorPanelProps extends XdReactComponentProps, HTMLProps<HTMLDivElement> {
+    repeatGridTextDataSeries: RepeatGridTextDataSeries,
+    selectedCellLocation: CellLocation
+}
 
-        if (!_repeatGridTextDataSeries) return
-        const node = _repeatGridTextDataSeries.textDataSeriesNodes[0]
+export const TextEditorPanel: FC<TextEditorPanelProps> = ({
+    selection,
+    root,
+    repeatGridTextDataSeries,
+    selectedCellLocation,
+    ...props
+}) => {
+
+    const [value, setValue] = useState('')
+
+    useEffect(() => {
+
+        const node = repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
         setValue(node.textDataSeries.join('\n'))
-
-    }, [selection.items[0], setValue, setRepeatGridTextDataSeries])
+    }, [selection.items[0], setValue, repeatGridTextDataSeries, selectedCellLocation])
 
 
     function textUpdated(event) {
-        console.log('textUpdated');
 
         if (!repeatGridTextDataSeries) return
 
@@ -40,7 +73,7 @@ export const App: XdReactApp = ({ selection, root, ...props }) => {
         setValue(textValue)
         const textDataSeries = textValue.split('\n').map(line => line === '' ? ' ' : line);
 
-        const { node } = repeatGridTextDataSeries.textDataSeriesNodes[0]
+        const { node } = repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
         editDocument({ editLabel: 'edit-text' }, selection => {
             repeatGridTextDataSeries.repeatGrid.attachTextDataSeries(node, textDataSeries)
         })
@@ -48,17 +81,17 @@ export const App: XdReactApp = ({ selection, root, ...props }) => {
 
     // yarn add https://www.npmjs.com/package/@adobe/react-spectrum
 
-    console.log(value);
-    
     return (
-        <div>
+        <div {...props}>
             <textarea
                 placeholder='Select a RepeatGrid'
                 value={value ? value : ''}
                 onChange={textUpdated}
                 style={{ height: 500, backgroundColor: 'white' }}
-                disabled={value===''}
+                // disabled={value === ''}
+                onFocus={e => e.currentTarget.setSelectionRange(1, 1)}
             />
         </div>
     );
 };
+

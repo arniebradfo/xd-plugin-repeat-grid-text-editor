@@ -4,11 +4,11 @@ import { Selection, RootNode } from 'scenegraph';
 
 export default class PanelController {
 
-    app: XdReactApp;
+    app: XdReactComponent;
     rootNode: HTMLDivElement = document.createElement('div');
     attachment?: HTMLBodyElement;
 
-    constructor(App: XdReactApp) {
+    constructor(App: XdReactComponent) {
         this.app = App;
         ["show", "hide", "update"].forEach(fn => this[fn] = this[fn].bind(this));
     }
@@ -28,11 +28,11 @@ export default class PanelController {
     }
 };
 
-export interface XdReactAppProps { // extends React.HTMLProps<HTMLDivElement> {
+export interface XdReactComponentProps { // extends React.HTMLProps<HTMLDivElement> {
     selection: Selection,
     root: RootNode,
 }
-export interface XdReactApp extends React.FC<XdReactAppProps> {}
+export interface XdReactComponent extends React.FC<XdReactComponentProps> {}
 export interface UxpShowPanelEvent extends Event {
     node: HTMLBodyElement,
     type: 'uxpshowpanel',
