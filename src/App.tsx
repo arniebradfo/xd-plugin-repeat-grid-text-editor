@@ -2,15 +2,11 @@ import { editDocument } from 'application';
 import React, { FC, useEffect, useState } from 'react';
 import { RepeatGrid, RootNode, Selection } from 'scenegraph';
 import { createTextDataSeries, RepeatGridTextDataSeries } from './createTextDataSeries';
+import { XdReactApp } from './util/panel-controller';
 
-interface Props extends React.HTMLProps<HTMLDivElement> {
-    selection: Selection,
-    root: RootNode,
-}
+export const App: XdReactApp = ({ selection, root, ...props }) => {
 
-export const App: FC<Props> = ({ selection, root, ...props }) => {
-
-    const [value, setValue] = useState<string | undefined>()
+    const [value, setValue] = useState('')
     const [repeatGridTextDataSeries, setRepeatGridTextDataSeries] = useState<RepeatGridTextDataSeries>()
 
     console.log({ selection, root });
@@ -21,7 +17,7 @@ export const App: FC<Props> = ({ selection, root, ...props }) => {
         if (!(selection.items[0] instanceof RepeatGrid)) {
             console.log('setValue(undefined)');
 
-            setValue(undefined)
+            setValue('')
             return
         }
 
@@ -55,13 +51,13 @@ export const App: FC<Props> = ({ selection, root, ...props }) => {
     console.log(value);
     
     return (
-        <div {...props}>
+        <div>
             <textarea
                 placeholder='Select a RepeatGrid'
-                value={value ? value : undefined}
+                value={value ? value : ''}
                 onChange={textUpdated}
                 style={{ height: 500, backgroundColor: 'white' }}
-                disabled={value == null}
+                disabled={value===''}
             />
         </div>
     );
