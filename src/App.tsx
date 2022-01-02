@@ -1,5 +1,5 @@
 import { editDocument } from 'application';
-import React, { FC, HTMLProps, useEffect, useState } from 'react';
+import React, { FC, FocusEventHandler, HTMLProps, useEffect, useState } from 'react';
 import { RepeatGrid, } from 'scenegraph';
 import { CellLocation, createTextDataSeries, RepeatGridTextDataSeries } from './createTextDataSeries';
 import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
@@ -12,12 +12,12 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
     useEffect(() => {
         const _repeatGridTextDataSeries = createTextDataSeries(selection)
-        setRepeatGridTextDataSeries(_repeatGridTextDataSeries);        
+        setRepeatGridTextDataSeries(_repeatGridTextDataSeries);
         setSelectedCellLocation(_repeatGridTextDataSeries?.cellLocation)
     }, [selection.items[0]])
 
     const selectTextNode = (index: number) => {
-        setSelectedCellLocation({columnIndex: index})
+        setSelectedCellLocation({ columnIndex: index })
         setRepeatGridTextDataSeries(createTextDataSeries(selection));
     }
 
@@ -26,7 +26,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
             <a
                 key={textDataSeriesNode.node.guid}
                 onClick={() => selectTextNode(index)}
-                style={{ color: index === selectedCellLocation?.columnIndex ? 'gray' : undefined}}
+                style={{ color: index === selectedCellLocation?.columnIndex ? 'gray' : undefined }}
             >
                 {textDataSeriesNode.name}
             </a>
@@ -59,7 +59,6 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
     const [value, setValue] = useState('')
 
     useEffect(() => {
-
         const node = repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
         setValue(node.textDataSeries.join('\n'))
     }, [selection.items[0], setValue, repeatGridTextDataSeries, selectedCellLocation])
@@ -79,17 +78,26 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
         })
     }
 
-    // yarn add https://www.npmjs.com/package/@adobe/react-spectrum
+    // TODO: Select the correct line on focus
+    const onFocus: FocusEventHandler<HTMLTextAreaElement> = (e) => {
+        // onMouseUp does a e.currentTarget.select() after focus occurs?
+        // This doesn't work on parent: onMouseUpCapture={e => { e.preventDefault(); e.stopPropagation(); }}
+        // or its some other event
+        const { currentTarget } = e
+        setTimeout(() => {
+            currentTarget.setSelectionRange(5, 10) // sometimes works
+        }, 0);
+    }
 
     return (
-        <div {...props}>
+        <div {...props} >
             <textarea
                 placeholder='Select a RepeatGrid'
                 value={value ? value : ''}
                 onChange={textUpdated}
                 style={{ height: 500, backgroundColor: 'white' }}
                 // disabled={value === ''}
-                onFocus={e => e.currentTarget.setSelectionRange(1, 1)}
+                onFocus={onFocus}
             />
         </div>
     );
