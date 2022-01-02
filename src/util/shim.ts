@@ -1,4 +1,3 @@
-//@ts-nocheck
 if (window.setTimeout == null) {
     window.setTimeout = (fn: any) => fn();
 }
@@ -13,11 +12,13 @@ if (window.cancelAnimationFrame == null) {
 }
 
 if (window.requestAnimationFrame == null) {
+    //@ts-expect-error
     window.requestAnimationFrame = (callback: any) => {
         console.log("requestAnimationFrame is not supported yet");
     }
 }
 
 if (window.HTMLIFrameElement == null) {
+    //@ts-expect-error
     window.HTMLIFrameElement = class HTMLIFrameElement { };
 }
