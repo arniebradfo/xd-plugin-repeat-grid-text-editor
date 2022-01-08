@@ -68,7 +68,10 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
 
     function textUpdated(event) {
 
-        console.log('textUpdated');
+        // console.log('textUpdated');
+
+        // console.log(event.target.value);
+        console.dir(event.nativeElement);
 
         if (!repeatGridTextDataSeries) return
 
@@ -87,25 +90,29 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
         // onMouseUp does a e.currentTarget.select() after focus occurs?
         // This doesn't work on parent: onMouseUpCapture={e => { e.preventDefault(); e.stopPropagation(); }}
         // or its some other event
-        const { currentTarget } = e
-        setTimeout(() => {
-            currentTarget.setSelectionRange(5, 10) // sometimes works
-        }, 0);
+        const { target } = e
+        console.dir(target);
+        
+        // setTimeout(() => {
+            target.setSelectionRange(5, 10) // sometimes works
+        // }, 0);
     }
 
     return (
-        <WC {...props}
-            onInput={textUpdated} // this is called twice
+        <div
+            onInput={textUpdated}
+            onFocus={onFocus as FocusEventHandler<any>}
+            {...props}
         >
             <sp-textarea // can this textarea even set Selection?
                 placeholder='Select a RepeatGrid'
                 value={value ? value : ''}
                 // onChange={textUpdated}
-                style={{ height: 500, backgroundColor: 'white' }}
+                // style={{ height: 500, backgroundColor: 'white' }}
                 // disabled={value === ''}
                 // onFocus={onFocus}
             ></sp-textarea>
-        </WC>
+        </div>
     );
 };
 
