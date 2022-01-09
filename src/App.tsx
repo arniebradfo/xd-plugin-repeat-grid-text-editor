@@ -15,7 +15,10 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
     }, [selection.items[0]])
 
     const selectTextNode = (index: number) => {
-        setSelectedCellLocation({ columnIndex: index })
+        setSelectedCellLocation({
+            columnIndex: index,
+            rowIndex: repeatGridTextDataSeries?.cellLocation?.rowIndex
+        })
         setRepeatGridTextDataSeries(createTextDataSeries(selection));
     }
 
@@ -61,7 +64,7 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
     const textDataSeriesNode = useMemo(() => (
         repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
     ), [repeatGridTextDataSeries, selectedCellLocation])
-    
+
     const isOutsideEditContext = !isInEditContext(selection, textDataSeriesNode.node)
 
     useEffect(() => {
@@ -83,18 +86,29 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
     }
 
     const selectTextSelectionRange: FocusEventHandler<HTMLTextAreaElement> = useCallback((e) => {
-        const { currentTarget } = e
+
+        let start = 0;
+        let end = 0;
+        const { rowIndex } = selectedCellLocation;
+        if (rowIndex != null) {
+            start = textDataSeriesNode
+                .textDataSeries
+                .slice(0, rowIndex)
+                .join('\n')
+                .length + (rowIndex > 0 ? 1 : 0);
+            end = start + textDataSeriesNode.textDataSeries[rowIndex].length;
+        }
+
+        const { currentTarget } = e;
 
         // Reset the selection to nothing
-        currentTarget.setSelectionRange(0, 1)
+        currentTarget.setSelectionRange(0, end ? 0 : 1);
 
         // set selection to the correct value in the next frame
         // this tricks UXP into the correct behavior
-        setTimeout(() => {
-            // TODO: set selection range to correct line
-            currentTarget.setSelectionRange(0, 0)
-        }, 1);
-    }, [])
+        setTimeout(() => currentTarget.setSelectionRange(start, end), 1);
+    
+    }, [selectedCellLocation, textDataSeriesNode])
 
     // force focus on every render cycle to trigger selectTextSelectionRange()
     const textareaRef = useRef<HTMLTextAreaElement>(null)

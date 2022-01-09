@@ -3,6 +3,5 @@
   - is Node in Component? return
   - is Path SceneNode?
   - detects non Text Node in Leaves
-- select Correct range
 - navigation
 - style
