@@ -1,11 +1,9 @@
 import { editDocument } from 'application';
-import React, { FC, FocusEventHandler, HTMLProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CellLocation, createTextDataSeries, RepeatGridTextDataSeries } from './createTextDataSeries';
+import React, { ChangeEventHandler, FC, FocusEventHandler, HTMLProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { CellLocation, createTextDataSeries, isInEditContext, RepeatGridTextDataSeries } from './createTextDataSeries';
 import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
 
 export const App: XdReactComponent = ({ selection, root, ...props }) => {
-    // console.log({ selection, root });
-    // console.log('Render App');
 
     const [repeatGridTextDataSeries, setRepeatGridTextDataSeries] = useState<RepeatGridTextDataSeries>()
     const [selectedCellLocation, setSelectedCellLocation] = useState<CellLocation>()
@@ -60,21 +58,26 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
 
     const [value, setValue] = useState('')
 
-    useEffect(() => {
-        const node = repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
-        setValue(node.textDataSeries.join('\n'))
-    }, [selection.items[0], setValue, repeatGridTextDataSeries, selectedCellLocation])
+    const textDataSeriesNode = useMemo(() => (
+        repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
+    ), [repeatGridTextDataSeries, selectedCellLocation])
+    
+    const isOutsideEditContext = !isInEditContext(selection, textDataSeriesNode.node)
 
-    function textUpdated(event) {
-        if (!repeatGridTextDataSeries) return
+    useEffect(() => {
+        const { textDataSeries } = textDataSeriesNode
+        setValue(textDataSeries.join('\n'))
+    }, [selection.items[0], setValue, textDataSeriesNode])
+
+    const textUpdated: ChangeEventHandler<HTMLTextAreaElement> = (event) => {
+        // if (!repeatGridTextDataSeries) return // unnecessary?
 
         const textValue = event.target.value
         setValue(textValue)
         const textDataSeries = textValue.split('\n').map(line => line === '' ? ' ' : line);
 
-        const { node } = repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
+        const { node } = textDataSeriesNode
         editDocument({ editLabel: 'edit-text' }, selection => {
-            // console.log('attachTextDataSeries', node.text);
             repeatGridTextDataSeries.repeatGrid.attachTextDataSeries(node, textDataSeries)
         })
     }
@@ -106,7 +109,11 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
                 value={value ? value : ''}
                 onChange={textUpdated}
                 onFocus={selectTextSelectionRange}
+                disabled={isOutsideEditContext}
             />
+            {isOutsideEditContext && (
+                <sp-label>Selected TextDataSeries is outside the Edit Context</sp-label>
+            )}
         </div>
     );
 };

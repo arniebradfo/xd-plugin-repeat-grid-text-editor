@@ -1,8 +1,6 @@
-import { CommandHandler, GraphicNode, RepeatGrid, RootNode, SceneNode, Text, Selection } from "scenegraph";
+import { CommandHandler, GraphicNode, RepeatGrid, RootNode, SceneNode, Text, Selection, root } from "scenegraph";
 
 export const createTextDataSeries = function (selection: Selection, root?: RootNode): RepeatGridTextDataSeries | undefined {
-    // console.log('createTextDataSeries');
-    // console.log({ selection, root });
 
     const selectedRepeatGridItem = selection.items[0]
     // TODO: return under better circumstances
@@ -128,4 +126,10 @@ function indexOfChildInParent(
         }
     })
     return index
+}
+
+export function isInEditContext(selection: Selection, node: SceneNode | null): boolean {
+    if (node == null) return false
+    if (node.guid === selection.editContext.guid) return true
+    return isInEditContext(selection, node.parent)
 }
