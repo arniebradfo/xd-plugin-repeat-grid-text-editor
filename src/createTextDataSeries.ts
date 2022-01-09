@@ -1,9 +1,11 @@
 import { CommandHandler, GraphicNode, RepeatGrid, RootNode, SceneNode, Text, Selection } from "scenegraph";
 
 export const createTextDataSeries = function (selection: Selection, root?: RootNode): RepeatGridTextDataSeries | undefined {
+    // console.log('createTextDataSeries');
     // console.log({ selection, root });
 
     const selectedRepeatGridItem = selection.items[0]
+    // TODO: return under better circumstances
     if (!(selectedRepeatGridItem instanceof RepeatGrid || selectedRepeatGridItem instanceof Text)) return
 
     // bubble up the SceneGraph, recording the guid of the parentNode and the index of the currentNode, stopping at the firstRepeatGrid
@@ -11,10 +13,11 @@ export const createTextDataSeries = function (selection: Selection, root?: RootN
     if (!findPathToRepeatGridAncestor) return // not a child of RepeatGrid
     const { node: repeatGrid, indexPath: pathFromSelected } = findPathToRepeatGridAncestor
 
-    // traverse repeatGrid first child and set of Text Nodes 
-    const exampleRepeatCell = repeatGrid.children.at(0)
-    if (!exampleRepeatCell) return
-    const leaves = getSceneNodeLeaves(exampleRepeatCell) as NodeAndPath<Text>[]
+    // traverse the selected repeatGrid child and set of Text Nodes 
+    const selectedRowIndex = pathFromSelected[0]
+    const selectedRepeatCell = repeatGrid.children.at(selectedRowIndex)
+    if (!selectedRepeatCell) return
+    const leaves = getSceneNodeLeaves(selectedRepeatCell) as NodeAndPath<Text>[]
     // console.log({ leaves });
 
     // transform leaves into textDataSeries

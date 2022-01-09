@@ -1,12 +1,11 @@
 import { editDocument } from 'application';
 import React, { FC, FocusEventHandler, HTMLProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { RepeatGrid } from 'scenegraph';
 import { CellLocation, createTextDataSeries, RepeatGridTextDataSeries } from './createTextDataSeries';
 import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
-import { WC } from './WC';
 
 export const App: XdReactComponent = ({ selection, root, ...props }) => {
     // console.log({ selection, root });
+    // console.log('Render App');
 
     const [repeatGridTextDataSeries, setRepeatGridTextDataSeries] = useState<RepeatGridTextDataSeries>()
     const [selectedCellLocation, setSelectedCellLocation] = useState<CellLocation>()
@@ -75,21 +74,22 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
 
         const { node } = repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
         editDocument({ editLabel: 'edit-text' }, selection => {
+            // console.log('attachTextDataSeries', node.text);
             repeatGridTextDataSeries.repeatGrid.attachTextDataSeries(node, textDataSeries)
         })
     }
 
     const selectTextSelectionRange: FocusEventHandler<HTMLTextAreaElement> = useCallback((e) => {
         const { currentTarget } = e
-        
+
         // Reset the selection to nothing
-        currentTarget.setSelectionRange(0, 0)
+        currentTarget.setSelectionRange(0, 1)
 
         // set selection to the correct value in the next frame
         // this tricks UXP into the correct behavior
         setTimeout(() => {
             // TODO: set selection range to correct line
-            currentTarget.setSelectionRange(0, 4)
+            currentTarget.setSelectionRange(0, 0)
         }, 1);
     }, [])
 
@@ -106,8 +106,6 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
                 value={value ? value : ''}
                 onChange={textUpdated}
                 onFocus={selectTextSelectionRange}
-                // autoFocus
-                // disabled={value === ''}
             />
         </div>
     );
