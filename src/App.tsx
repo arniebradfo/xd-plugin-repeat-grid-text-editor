@@ -1,5 +1,5 @@
 import { editDocument } from 'application';
-import React, { FC, FocusEventHandler, HTMLProps, useEffect, useState } from 'react';
+import React, { FC, FocusEventHandler, HTMLProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RepeatGrid } from 'scenegraph';
 import { CellLocation, createTextDataSeries, RepeatGridTextDataSeries } from './createTextDataSeries';
 import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
@@ -67,12 +67,6 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
     }, [selection.items[0], setValue, repeatGridTextDataSeries, selectedCellLocation])
 
     function textUpdated(event) {
-
-        // console.log('textUpdated');
-
-        // console.log(event.target.value);
-        console.dir(event.nativeElement);
-
         if (!repeatGridTextDataSeries) return
 
         const textValue = event.target.value
@@ -85,34 +79,36 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
         })
     }
 
-    // TODO: Select the correct line on focus
-    const onFocus: FocusEventHandler<HTMLTextAreaElement> = (e) => {
-        // onMouseUp does a e.currentTarget.select() after focus occurs?
-        // This doesn't work on parent: onMouseUpCapture={e => { e.preventDefault(); e.stopPropagation(); }}
-        // or its some other event
-        const { target } = e
-        console.dir(target);
+    const selectTextSelectionRange: FocusEventHandler<HTMLTextAreaElement> = useCallback((e) => {
+        const { currentTarget } = e
         
-        // setTimeout(() => {
-            target.setSelectionRange(5, 10) // sometimes works
-        // }, 0);
-    }
+        // Reset the selection to nothing
+        currentTarget.setSelectionRange(0, 0)
+
+        // set selection to the correct value in the next frame
+        // this tricks UXP into the correct behavior
+        setTimeout(() => {
+            // TODO: set selection range to correct line
+            currentTarget.setSelectionRange(0, 4)
+        }, 1);
+    }, [])
+
+    // force focus on every render cycle to trigger selectTextSelectionRange()
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
+    textareaRef.current?.focus()
 
     return (
-        <div
-            onInput={textUpdated}
-            onFocus={onFocus as FocusEventHandler<any>}
-            {...props}
-        >
-            <sp-textarea // can this textarea even set Selection?
+        <div {...props} >
+            <textarea
+                ref={textareaRef}
+                style={{ height: 500, backgroundColor: 'white' }}
                 placeholder='Select a RepeatGrid'
                 value={value ? value : ''}
-                // onChange={textUpdated}
-                // style={{ height: 500, backgroundColor: 'white' }}
+                onChange={textUpdated}
+                onFocus={selectTextSelectionRange}
+                // autoFocus
                 // disabled={value === ''}
-                // onFocus={onFocus}
-            ></sp-textarea>
+            />
         </div>
     );
 };
-
