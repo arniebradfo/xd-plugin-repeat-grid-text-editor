@@ -22,42 +22,57 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
         setRepeatGridTextDataSeries(createTextDataSeries(selection));
     }
 
+    const returnToHomePanel = () => setSelectedCellLocation(undefined)
+    const showNoPanel = !repeatGridTextDataSeries
+    const showSelectionPanel = repeatGridTextDataSeries && selectedCellLocation == null
+    const showTextEditorPanel = repeatGridTextDataSeries && selectedCellLocation != null
+
+    const nodeIndexes = showTextEditorPanel
+        ? loopingPrevNextArrayIndex(repeatGridTextDataSeries.textDataSeriesNodes.length, selectedCellLocation.columnIndex)
+        : undefined
+
     return (
         <div
         // style={{ fontFamily: 'Adobe Clean, sans serif' }}
         >
 
-            {!repeatGridTextDataSeries && (
+            {showNoPanel && (
                 <div>Select A Repeat Grid</div>
             )}
 
-            {(repeatGridTextDataSeries && selectedCellLocation == null) && (
+            {showSelectionPanel && (
                 <div>
-                    <h6>
-                        Repeat Grid Text Objects
-                    </h6>
-                    {repeatGridTextDataSeries?.textDataSeriesNodes.map((textDataSeriesNode, index) => (
+                    <div style={{ display: 'flex' }}>
+                        <span>Repeat Grid Text Objects</span>
+                        <span>?</span>
+                    </div>
+                    {repeatGridTextDataSeries.textDataSeriesNodes.map((textDataSeriesNode, index) => (
                         <a
                             key={textDataSeriesNode.node.guid}
                             onClick={() => selectTextNode(index)}
-                        // style={{ color: index === selectedCellLocation?.columnIndex ? 'gray' : undefined }}
+                            style={{ display: 'flex' }}
                         >
-                            {textDataSeriesNode.name}
+                            <span>T</span>
+                            <span>{textDataSeriesNode.name}</span>
+                            <span>&gt;</span>
                         </a>
                     ))}
                 </div>
             )}
 
-            {(repeatGridTextDataSeries && selectedCellLocation != null) && (
+            {showTextEditorPanel && (
                 <div>
-                    <a
-                        onClick={e => setSelectedCellLocation(undefined)}
-                    >{'⬅︎ Back'}</a>
+                    <a onClick={returnToHomePanel}>{'⬅ All Text Objects'}</a>
+                    <div>{repeatGridTextDataSeries.textDataSeriesNodes[nodeIndexes!.current].name}</div>
                     <TextEditorPanel
                         repeatGridTextDataSeries={repeatGridTextDataSeries}
                         selectedCellLocation={selectedCellLocation}
                         {...{ selection, root }}
                     />
+                    <div>
+                        <a onClick={() => selectTextNode(nodeIndexes!.previous)}>Previous</a>
+                        <a onClick={() => selectTextNode(nodeIndexes!.next)}>Next</a>
+                    </div>
                 </div>
             )}
 
@@ -150,3 +165,22 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
         </div>
     );
 };
+
+const loopingPrevNextArrayIndex = (length: number, index: number) => {
+
+    const current = index
+    let next = current + 1
+    let previous = current - 1
+
+    // if last item, loop to start
+    next = next === length ? 0 : next
+
+    // if first item, loop to end
+    previous = previous < 0 ? length - 1 : previous
+
+    return {
+        current,
+        next,
+        previous
+    }
+}
