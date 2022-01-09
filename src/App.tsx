@@ -23,25 +23,44 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
     }
 
     return (
-        <div style={{ fontFamily: 'Adobe Clean, sans serif' }}>
-            {repeatGridTextDataSeries?.textDataSeriesNodes.map((textDataSeriesNode, index) => (
-                <a
-                    key={textDataSeriesNode.node.guid}
-                    onClick={() => selectTextNode(index)}
-                    style={{ color: index === selectedCellLocation?.columnIndex ? 'gray' : undefined }}
-                >
-                    {textDataSeriesNode.name}
-                </a>
-            ))}
-            {(repeatGridTextDataSeries && selectedCellLocation != null) ? (
-                <TextEditorPanel
-                    repeatGridTextDataSeries={repeatGridTextDataSeries}
-                    selectedCellLocation={selectedCellLocation}
-                    {...{ selection, root }}
-                />
-            ) : (
-                <div>Select A Text Node</div>
+        <div
+        // style={{ fontFamily: 'Adobe Clean, sans serif' }}
+        >
+
+            {!repeatGridTextDataSeries && (
+                <div>Select A Repeat Grid</div>
             )}
+
+            {(repeatGridTextDataSeries && selectedCellLocation == null) && (
+                <div>
+                    <h6>
+                        Repeat Grid Text Objects
+                    </h6>
+                    {repeatGridTextDataSeries?.textDataSeriesNodes.map((textDataSeriesNode, index) => (
+                        <a
+                            key={textDataSeriesNode.node.guid}
+                            onClick={() => selectTextNode(index)}
+                        // style={{ color: index === selectedCellLocation?.columnIndex ? 'gray' : undefined }}
+                        >
+                            {textDataSeriesNode.name}
+                        </a>
+                    ))}
+                </div>
+            )}
+
+            {(repeatGridTextDataSeries && selectedCellLocation != null) && (
+                <div>
+                    <a
+                        onClick={e => setSelectedCellLocation(undefined)}
+                    >{'⬅︎ Back'}</a>
+                    <TextEditorPanel
+                        repeatGridTextDataSeries={repeatGridTextDataSeries}
+                        selectedCellLocation={selectedCellLocation}
+                        {...{ selection, root }}
+                    />
+                </div>
+            )}
+
         </div>
     )
 }
@@ -107,7 +126,7 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
         // set selection to the correct value in the next frame
         // this tricks UXP into the correct behavior
         setTimeout(() => currentTarget.setSelectionRange(start, end), 1);
-    
+
     }, [selectedCellLocation, textDataSeriesNode])
 
     // force focus on every render cycle to trigger selectTextSelectionRange()
