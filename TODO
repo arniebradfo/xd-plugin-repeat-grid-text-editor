@@ -1,6 +1,11 @@
+- style - NEXT
+  - icons
+  - textarea line numbers
+- keybindings
 - createTextDataSeries detects 
   - or any node in RepeatGrid 
   - is Node in Component? return
   - is Path SceneNode?
   - detects non Text Node in Leaves
-- style
+- test
+- refactor

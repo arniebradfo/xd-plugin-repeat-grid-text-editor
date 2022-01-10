@@ -1,0 +1,121 @@
+html, body {
+    /* background-color: brown; */
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+textarea {
+    font-size: 18px !important;
+}
+
+
+.xd-detail {
+    /* https://spectrum.adobe.com/page/detail/ */
+    font-size: 10px;
+    letter-spacing: 1.5;
+    /* text-transform: uppercase; // doesn't work in uxp */
+}
+
+.xd-heading {
+    font-size: 16px;
+}
+
+.flex-splitter {
+    flex: 1 1 auto;
+}
+
+.uxp-plugin {
+    font-family: Adobe Clean, sans-serif;
+}
+
+.uxp-plugin>div, .App, .SelectionPanel, .TextEditorPanel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.SelectionPanel-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.25rem 0;
+}
+
+.SelectionPanel-item {
+    display: flex;
+    align-items: center;
+    height: 1.5rem;
+    padding: 0 12px;
+    margin: 0 -12px 1px;
+    font-size: 12px;
+}
+
+.SelectionPanel-item:hover {
+    background-color: #E6F3FB;
+}
+
+.SelectionPanel-item:hover .SelectionPanel-item-arrow {
+    opacity: 1;
+}
+
+.SelectionPanel-item-icon {
+    flex: 0 0 auto;
+}
+
+.SelectionPanel-item-text {
+    flex: 1 1 auto;
+    margin: 0 0.5rem;
+}
+
+.SelectionPanel-item-arrow {
+    flex: 0 0 auto;
+    opacity: 0;
+}
+
+.SelectionPanel-footer {
+    padding-top: 12px;
+    font-style: italic;
+    opacity: 0.6;
+}
+
+
+.TextEditorPanel {}
+
+.TextEditorPanel-back {
+    margin: 0.25rem 0;
+    /* cursor: pointer; */
+}
+
+.TextEditorPanel-header {}
+
+.TextEditorPanel-TextEditor {
+    flex: 1 1 auto;
+    margin: 0.5rem 0 1rem;
+}
+
+.TextEditorPanel-footer {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 12px;
+}
+
+
+
+.TextEditor {
+    display: flex;
+    flex-direction: column;
+}
+
+.TextEditor-textarea {
+    background-color: white;
+    margin: 0 !important;
+    padding: 0.5rem;
+    flex: 1 0 auto;
+    height: 100%;
+    font-size: 14px;
+}
+
+.TextEditor-warning {
+    color: #cb6f10;
+}

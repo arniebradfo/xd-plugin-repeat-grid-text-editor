@@ -2,6 +2,7 @@ import { editDocument } from 'application';
 import React, { ChangeEventHandler, FC, FocusEventHandler, HTMLProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CellLocation, createTextDataSeries, isInEditContext, RepeatGridTextDataSeries } from './createTextDataSeries';
 import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
+import './App.css'
 
 export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
@@ -32,46 +33,61 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
         : undefined
 
     return (
-        <div
-        // style={{ fontFamily: 'Adobe Clean, sans serif' }}
-        >
+        <div className='App'>
 
             {showNoPanel && (
-                <div>Select A Repeat Grid</div>
+                <div className='xd-heading'>Select A Repeat Grid</div>
             )}
 
             {showSelectionPanel && (
-                <div>
-                    <div style={{ display: 'flex' }}>
-                        <span>Repeat Grid Text Objects</span>
+                <div className='SelectionPanel'>
+                    <div className='SelectionPanel-header'>
+                        <span className='xd-detail'>
+                            {'Repeat Grid Text Objects'.toUpperCase()}
+                        </span>
                         <span>?</span>
                     </div>
                     {repeatGridTextDataSeries.textDataSeriesNodes.map((textDataSeriesNode, index) => (
-                        <a
+                        <div
                             key={textDataSeriesNode.node.guid}
                             onClick={() => selectTextNode(index)}
-                            style={{ display: 'flex' }}
+                            className='SelectionPanel-item'
                         >
-                            <span>T</span>
-                            <span>{textDataSeriesNode.name}</span>
-                            <span>&gt;</span>
-                        </a>
+                            <span className='SelectionPanel-item-icon'>
+                                T
+                            </span>
+                            <span className='SelectionPanel-item-text'>
+                                {textDataSeriesNode.name}
+                            </span>
+                            <span className='SelectionPanel-item-arrow'>&gt;</span>
+                        </div>
                     ))}
+                    <div className='flex-splitter' />
+                    <sp-divider size="small"></sp-divider>
+                    <div className='SelectionPanel-footer'>
+                        Select a Text Object to edit
+                    </div>
                 </div>
             )}
 
             {showTextEditorPanel && (
-                <div>
-                    <a onClick={returnToHomePanel}>{'⬅ All Text Objects'}</a>
-                    <div>{repeatGridTextDataSeries.textDataSeriesNodes[nodeIndexes!.current].name}</div>
-                    <TextEditorPanel
+                <div className='TextEditorPanel'>
+                    <span className='TextEditorPanel-back xd-detail' onClick={returnToHomePanel}>
+                        {'< '}{'All Text Objects'.toUpperCase()}
+                    </span>
+                    <div className='TextEditorPanel-header xd-heading'>
+                        {repeatGridTextDataSeries.textDataSeriesNodes[nodeIndexes!.current].name}
+                    </div>
+                    <TextEditor
+                        className='TextEditorPanel-TextEditor'
                         repeatGridTextDataSeries={repeatGridTextDataSeries}
                         selectedCellLocation={selectedCellLocation}
                         {...{ selection, root }}
                     />
-                    <div>
-                        <a onClick={() => selectTextNode(nodeIndexes!.previous)}>Previous</a>
-                        <a onClick={() => selectTextNode(nodeIndexes!.next)}>Next</a>
+                    <sp-divider size="small"></sp-divider>
+                    <div className='TextEditorPanel-footer'>
+                        <sp-action-button quiet onClick={() => selectTextNode(nodeIndexes!.previous)}>{'< Previous'}</sp-action-button>
+                        <sp-action-button quiet onClick={() => selectTextNode(nodeIndexes!.next)}>{'Next >'}</sp-action-button>
                     </div>
                 </div>
             )}
@@ -85,11 +101,12 @@ export interface TextEditorPanelProps extends XdReactComponentProps, HTMLProps<H
     selectedCellLocation: CellLocation
 }
 
-export const TextEditorPanel: FC<TextEditorPanelProps> = ({
+export const TextEditor: FC<TextEditorPanelProps> = ({
     selection,
     root,
     repeatGridTextDataSeries,
     selectedCellLocation,
+    className,
     ...props
 }) => {
 
@@ -149,10 +166,13 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
     textareaRef.current?.focus()
 
     return (
-        <div {...props} >
+        <div
+            className={['TextEditor', className].join(' ')}
+            {...props}
+        >
             <textarea
+                className='TextEditor-textarea'
                 ref={textareaRef}
-                style={{ height: 500, backgroundColor: 'white' }}
                 placeholder='Select a RepeatGrid'
                 value={value ? value : ''}
                 onChange={textUpdated}
@@ -160,7 +180,9 @@ export const TextEditorPanel: FC<TextEditorPanelProps> = ({
                 disabled={isOutsideEditContext}
             />
             {isOutsideEditContext && (
-                <sp-label>Selected TextDataSeries is outside the Edit Context</sp-label>
+                <div className= 'TextEditor-warning'>
+                    Selected TextDataSeries is outside the Edit Context
+                </div>
             )}
         </div>
     );
@@ -178,9 +200,5 @@ const loopingPrevNextArrayIndex = (length: number, index: number) => {
     // if first item, loop to end
     previous = previous < 0 ? length - 1 : previous
 
-    return {
-        current,
-        next,
-        previous
-    }
+    return { current, next, previous }
 }
