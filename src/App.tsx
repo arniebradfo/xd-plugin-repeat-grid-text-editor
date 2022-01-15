@@ -3,6 +3,7 @@ import React, { ChangeEventHandler, FC, FocusEventHandler, HTMLProps, useCallbac
 import { CellLocation, createTextDataSeries, isInEditContext, RepeatGridTextDataSeries } from './createTextDataSeries';
 import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
 import './App.css'
+import { Icon } from './Icon';
 
 export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
@@ -45,23 +46,29 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                         <span className='xd-detail'>
                             {'Repeat Grid Text Objects'.toUpperCase()}
                         </span>
-                        <span>?</span>
+                        <Icon iconPath='Info' />
                     </div>
-                    {repeatGridTextDataSeries.textDataSeriesNodes.map((textDataSeriesNode, index) => (
-                        <div
-                            key={textDataSeriesNode.node.guid}
-                            onClick={() => selectTextNode(index)}
-                            className='SelectionPanel-item'
-                        >
-                            <span className='SelectionPanel-item-icon'>
-                                T
+                    <div className='SelectionPanel-list'>
+                        <div className='SelectionPanel-list-item SelectionPanel-list-item-repeatgrid'>
+                            <Icon iconPath='RepeatGrid' className='SelectionPanel-list-item-icon' />
+                            <span className='SelectionPanel-list-item-text'>
+                                Repeat Grid Name
                             </span>
-                            <span className='SelectionPanel-item-text'>
-                                {textDataSeriesNode.name}
-                            </span>
-                            <span className='SelectionPanel-item-arrow'>&gt;</span>
                         </div>
-                    ))}
+                        {repeatGridTextDataSeries.textDataSeriesNodes.map((textDataSeriesNode, index) => (
+                            <div
+                                key={textDataSeriesNode.node.guid}
+                                onClick={() => selectTextNode(index)}
+                                className='SelectionPanel-list-item SelectionPanel-list-item-textobject'
+                            >
+                                <Icon iconPath='TextObject' className='SelectionPanel-list-item-icon' />
+                                <span className='SelectionPanel-list-item-text'>
+                                    {textDataSeriesNode.name}
+                                </span>
+                                <Icon iconPath='ChevronRight' className='SelectionPanel-list-item-arrow' />
+                            </div>
+                        ))}
+                    </div>
                     <div className='flex-splitter' />
                     <sp-divider size="small"></sp-divider>
                     <div className='SelectionPanel-footer'>
@@ -72,9 +79,10 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
             {showTextEditorPanel && (
                 <div className='TextEditorPanel'>
-                    <span className='TextEditorPanel-back xd-detail' onClick={returnToHomePanel}>
-                        {'< '}{'All Text Objects'.toUpperCase()}
-                    </span>
+                    <div className='TextEditorPanel-back xd-button' onClick={returnToHomePanel}>
+                        <Icon iconPath='ChevronLeftSmall' />{' '}
+                        <span className='xd-detail'>{'All Text Objects'.toUpperCase()}</span>
+                    </div>
                     <div className='TextEditorPanel-header xd-heading'>
                         {repeatGridTextDataSeries.textDataSeriesNodes[nodeIndexes!.current].name}
                     </div>
@@ -180,7 +188,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                 disabled={isOutsideEditContext}
             />
             {isOutsideEditContext && (
-                <div className= 'TextEditor-warning'>
+                <div className='TextEditor-warning'>
                     Selected TextDataSeries is outside the Edit Context
                 </div>
             )}

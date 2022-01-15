@@ -1,5 +1,4 @@
 html, body {
-    /* background-color: brown; */
     height: 100%;
     width: 100%;
     margin: 0;
@@ -13,7 +12,7 @@ textarea {
 
 .xd-detail {
     /* https://spectrum.adobe.com/page/detail/ */
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 1.5;
     /* text-transform: uppercase; // doesn't work in uxp */
 }
@@ -22,12 +21,44 @@ textarea {
     font-size: 16px;
 }
 
+.xd-icon {
+    display: inline-block;
+    flex: 0 0 auto;
+    vertical-align: text-bottom;
+    height: 12px;
+    width: 12px;
+}
+
+.xd-icon>svg {
+    display: block;
+    fill: currentColor;
+    height: 100%;
+    width: 100%;
+}
+
+.xd-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.25rem;
+    height: 1.5rem;
+    border-radius: 3px;
+}
+
+.xd-button:hover {
+    background-color: #EBEBEB;
+}
+
+.xd-button:active {
+    background-color: #E6E6E6;
+}
+
 .flex-splitter {
     flex: 1 1 auto;
 }
 
 .uxp-plugin {
-    font-family: Adobe Clean, sans-serif;
+    /* Xd doesn't actually use Adobe Clean */
+    /* font-family: Adobe Clean, sans-serif; */
 }
 
 .uxp-plugin>div, .App, .SelectionPanel, .TextEditorPanel {
@@ -39,38 +70,48 @@ textarea {
 .SelectionPanel-header {
     display: flex;
     justify-content: space-between;
-    margin: 0.25rem 0;
+    margin: 0.25rem 0 0.5rem;
+    opacity: 0.6;
 }
 
-.SelectionPanel-item {
+.SelectionPanel-list {
+    background-color: #FFFFFF;
+    margin: 0 -12px;
+}
+
+.SelectionPanel-list-item {
     display: flex;
     align-items: center;
     height: 1.5rem;
-    padding: 0 12px;
-    margin: 0 -12px 1px;
-    font-size: 12px;
+    padding: 0 14px;
+    font-size: 10px;
 }
 
-.SelectionPanel-item:hover {
+.SelectionPanel-list-item-repeatgrid .xd-icon {}
+
+.SelectionPanel-list-item-textobject {
+    padding-left: 32px;
+}
+
+.SelectionPanel-list-item-textobject:hover {
     background-color: #E6F3FB;
 }
 
-.SelectionPanel-item:hover .SelectionPanel-item-arrow {
-    opacity: 1;
+.SelectionPanel-list-item-textobject .SelectionPanel-list-item-icon {
+    opacity: 0.4;
 }
 
-.SelectionPanel-item-icon {
-    flex: 0 0 auto;
-}
-
-.SelectionPanel-item-text {
+.SelectionPanel-list-item-text {
     flex: 1 1 auto;
     margin: 0 0.5rem;
 }
 
-.SelectionPanel-item-arrow {
-    flex: 0 0 auto;
+.SelectionPanel-list-item-arrow {
     opacity: 0;
+}
+
+.SelectionPanel-list-item:hover .SelectionPanel-list-item-arrow {
+    opacity: 0.6;
 }
 
 .SelectionPanel-footer {
@@ -84,7 +125,7 @@ textarea {
 
 .TextEditorPanel-back {
     margin: 0.25rem 0;
-    /* cursor: pointer; */
+    align-self: flex-start;
 }
 
 .TextEditorPanel-header {}
