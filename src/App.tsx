@@ -13,19 +13,19 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
     const [shouldRetainFocus, setShouldRetainFocus] = useState<boolean>(false)
 
     useEffect(() => {
+        setShouldRetainFocus(false)
         const _repeatGridTextDataSeries = createTextDataSeries(selection)
         setRepeatGridTextDataSeries(_repeatGridTextDataSeries);
         setSelectedCellLocation(_repeatGridTextDataSeries?.cellLocation)
-        setShouldRetainFocus(false)
     }, [selection.items[0]])
 
     const selectTextNode = (index: number) => {
+        setShouldRetainFocus(true)
         setSelectedCellLocation({
             columnIndex: index,
             rowIndex: repeatGridTextDataSeries?.cellLocation?.rowIndex
         })
         setRepeatGridTextDataSeries(createTextDataSeries(selection));
-        setShouldRetainFocus(true)
     }
 
     const returnToHomePanel = () => setSelectedCellLocation(undefined)
@@ -36,6 +36,8 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
     const nodeIndexes = showTextEditorPanel
         ? loopingPrevNextArrayIndex(repeatGridTextDataSeries.textDataSeriesNodes.length, selectedCellLocation.columnIndex)
         : undefined
+    const navigateNext = () => selectTextNode(nodeIndexes!.next)
+    const navigatePrevious = () => selectTextNode(nodeIndexes!.previous)
 
     return (
         <div className='App' >
@@ -100,15 +102,17 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                         className='TextEditorPanel-TextEditor'
                         repeatGridTextDataSeries={repeatGridTextDataSeries}
                         selectedCellLocation={selectedCellLocation}
+                        onTabNext={navigateNext}
+                        onTabPrevious={navigatePrevious}
                         {...{ selection, root, shouldRetainFocus }}
                     />
                     <sp-divider size="small"></sp-divider>
                     <div className='TextEditorPanel-footer'>
-                        <div className='xd-button xd-button--outlined' onClick={() => selectTextNode(nodeIndexes!.previous)}>
+                        <div className='xd-button xd-button--outlined' onClick={navigatePrevious}>
                             <Icon iconPath='ChevronLeftSmall' />
                             <span className='text'>{'Previous'}</span>
                         </div>
-                        <div className='xd-button xd-button--outlined' onClick={() => selectTextNode(nodeIndexes!.next)}>
+                        <div className='xd-button xd-button--outlined' onClick={navigateNext}>
                             <span className='text'>{'Next'}</span>
                             <Icon iconPath='ChevronRightSmall' />
                         </div>
@@ -123,7 +127,9 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 export interface TextEditorPanelProps extends XdReactComponentProps, HTMLProps<HTMLDivElement> {
     repeatGridTextDataSeries: RepeatGridTextDataSeries,
     selectedCellLocation: CellLocation,
-    shouldRetainFocus?: boolean
+    shouldRetainFocus?: boolean,
+    onTabNext?(): void,
+    onTabPrevious?(): void,
 }
 
 export const TextEditor: FC<TextEditorPanelProps> = ({
@@ -133,6 +139,8 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     selectedCellLocation,
     shouldRetainFocus = false,
     className,
+    onTabNext,
+    onTabPrevious,
     ...props
 }) => {
 
@@ -202,7 +210,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
             focusTextareaUnfocused()
         else
             textareaRef.current?.blur()
-    }, [shouldRetainFocus])
+    })
 
     return (
         <div
@@ -210,12 +218,13 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
             onPointerEnter={focusTextareaUnfocused}
             {...props}
         >
-            <div
+            <form
                 className={[
                     'TextEditor-textarea-wrapper',
                     isOutsideEditContext ? 'disabled' : undefined
                 ].join(' ')}
             >
+                <input hidden onFocus={onTabPrevious} className='TextEditor-hidden-input' />
                 {/* THE LINE NUMBERS DON'T ACCOUNT FOR LINE WRAPPING, SO THEY ARE COMMENTED FOR NOW :( */}
                 {/* <div className='TextEditor-textarea-line-numbers'>
                     {value.split('\n').map((_, index) => {
@@ -235,8 +244,10 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                     onChange={textUpdated}
                     onFocus={selectTextSelectionRange}
                     disabled={isOutsideEditContext}
+                    // onKeyDown={tabNavigation}
                 />
-            </div>
+                <input hidden onFocus={onTabNext} className='TextEditor-hidden-input' />
+            </form>
             {isOutsideEditContext && (
                 <div className='TextEditor-warning'>
                     Selected TextDataSeries is outside the Edit Context<br />
@@ -285,4 +296,3 @@ const InfoButton: FC<InfoButtonProps> = ({ isOpen, onOpen, onClose, className, .
         )}
     </>)
 }
-

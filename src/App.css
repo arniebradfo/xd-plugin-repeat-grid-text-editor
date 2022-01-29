@@ -209,6 +209,13 @@ html, body {
     background-color: #FFFFFF;
 }
 
+.TextEditor-hidden-input{
+    position: absolute;
+    top: -100px;
+    right: -100px; 
+    opacity: 0.01; 
+}
+
 .TextEditor-warning {
     position: absolute;
     bottom: 0;

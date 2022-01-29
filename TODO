@@ -4,7 +4,9 @@
   - is Node in Component? return
   - is Path SceneNode?
   - detects non Text Node in Leaves
-- directions
+- instructions
+  - newline
+  - keybindings
 - test - bugs
   - when text wraps 
     - make the actual text area width:9999px and scroll on overflow?
