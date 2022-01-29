@@ -183,11 +183,12 @@ html, body {
 
 .TextEditor-textarea-wrapper {
     display: flex;
+    flex-direction: column;
     background-color: white;
     border-radius: 3px;
     border: 1px solid #E4E4E4;
     flex: 1 0 auto;
-    height: 100%;
+    /* height: 100%; */
 }
 
 .TextEditor-textarea-wrapper.disabled {
@@ -209,11 +210,12 @@ html, body {
     background-color: #FFFFFF;
 }
 
-.TextEditor-hidden-input{
+.TextEditor-hidden-nav-input {
     position: absolute;
     top: -100px;
-    right: -100px; 
-    opacity: 0.01; 
+    right: -100px;
+    opacity: 0.01;
+    height: 1rem;
 }
 
 .TextEditor-warning {
@@ -223,8 +225,8 @@ html, body {
     right: 0;
 
     padding: 0.5rem;
-    width: 96%;
-    margin: 2%;
+    width: calc(100% - 1rem);
+    margin: 0.5rem;
 
     background-color: rgba(203, 110, 16, 0.8);
     border: 1px solid rgb(203, 110, 16);

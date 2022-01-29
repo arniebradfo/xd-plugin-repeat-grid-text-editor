@@ -1,6 +1,6 @@
 import { HTMLProps } from "react";
 
-const logEvent = e => console.log(e.type)
+export const logEvent = e => console.log(e.type)
 
 export const eventBindings: HTMLProps<HTMLDivElement> = {
     onCopy: logEvent,

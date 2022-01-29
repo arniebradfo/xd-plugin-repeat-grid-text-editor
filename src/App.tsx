@@ -4,6 +4,7 @@ import { CellLocation, createTextDataSeries, isInEditContext, RepeatGridTextData
 import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
 import './App.css'
 import { Icon } from './Icon';
+import { logEvent } from './eventBindings';
 
 export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
@@ -146,6 +147,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
 
     const [value, setValue] = useState('')
     const textareaRef = useRef<HTMLTextAreaElement>(null)
+    const proxyInputRef = useRef<HTMLInputElement>(null)
 
     const textDataSeriesNode = useMemo(() => (
         repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
@@ -201,9 +203,11 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
 
     const focusTextareaUnfocused = useCallback(() => {
         // manually trigger focus rather than with a pointer event so we can setSelectionRange
-        if (document.activeElement !== textareaRef.current)
-            textareaRef.current?.focus()
-    }, [textDataSeriesNode])
+        if (document.activeElement !== textareaRef.current) {
+            const ref = isOutsideEditContext ? proxyInputRef : textareaRef
+            ref.current?.focus()
+        }
+    }, [textDataSeriesNode, isOutsideEditContext])
 
     useEffect(() => {
         if (shouldRetainFocus)
@@ -216,15 +220,14 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
         <div
             className={['TextEditor', className].join(' ')}
             onPointerEnter={focusTextareaUnfocused}
+            onClick={isOutsideEditContext ? focusTextareaUnfocused : undefined}
             {...props}
         >
-            <form
-                className={[
-                    'TextEditor-textarea-wrapper',
-                    isOutsideEditContext ? 'disabled' : undefined
-                ].join(' ')}
-            >
-                <input hidden onFocus={onTabPrevious} className='TextEditor-hidden-input' />
+
+            <form className='TextEditor-textarea-wrapper' >
+
+                <input hidden onFocus={onTabPrevious} className='TextEditor-hidden-nav-input' />
+
                 {/* THE LINE NUMBERS DON'T ACCOUNT FOR LINE WRAPPING, SO THEY ARE COMMENTED FOR NOW :( */}
                 {/* <div className='TextEditor-textarea-line-numbers'>
                     {value.split('\n').map((_, index) => {
@@ -236,6 +239,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                         )
                     })}
                 </div> */}
+
                 <textarea
                     className='TextEditor-textarea'
                     ref={textareaRef}
@@ -244,16 +248,25 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                     onChange={textUpdated}
                     onFocus={selectTextSelectionRange}
                     disabled={isOutsideEditContext}
-                    // onKeyDown={tabNavigation}
+                    style={isOutsideEditContext ? { pointerEvents: 'none' } : undefined}
                 />
-                <input hidden onFocus={onTabNext} className='TextEditor-hidden-input' />
+
+                {isOutsideEditContext && (
+                    <input ref={proxyInputRef} hidden className='TextEditor-hidden-nav-input' />
+                )}
+
+                <input hidden onFocus={onTabNext} className='TextEditor-hidden-nav-input' />
+
             </form>
+
             {isOutsideEditContext && (
                 <div className='TextEditor-warning'>
-                    Selected TextDataSeries is outside the Edit Context<br />
-                    Select the surrounding Repeat Grid to enable all editing
+                    <h4>Cannot Edit</h4>
+                    Selected TextDataSeries is outside the Edit Context. {' '}
+                    Select the surrounding Repeat Grid to enable all editing.
                 </div>
             )}
+
         </div>
     );
 };
