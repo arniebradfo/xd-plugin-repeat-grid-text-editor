@@ -9,6 +9,19 @@ html, body {
     font-size: 12px;
 }
 
+.flex-splitter {
+    flex: 1 1 auto;
+}
+
+.uxp-plugin>div, .App, .SelectionPanel, .TextEditorPanel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+
+/* XD STYLES & COMPONENTS */
+
 .xd-detail {
     /* https://spectrum.adobe.com/page/detail/ */
     font-size: 9px;
@@ -60,22 +73,13 @@ html, body {
     background-color: #E6E6E6;
 }
 
-.flex-splitter {
-    flex: 1 1 auto;
-}
-
 .uxp-plugin {
     /* Xd doesn't actually use Adobe Clean */
     /* font-family: Adobe Clean, sans-serif; */
 }
 
-.uxp-plugin>div, .App, .SelectionPanel, .TextEditorPanel {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
 
-
+/* SELECTION PANEL */
 
 .SelectionPanel-header {
     display: flex;
@@ -139,6 +143,8 @@ html, body {
 }
 
 
+/* TEXT EDITOR PANEL */
+
 .TextEditorPanel {}
 
 .TextEditorPanel-back {
@@ -167,26 +173,60 @@ html, body {
 }
 
 
+/* TEXT EDITOR */
 
 .TextEditor {
     display: flex;
     flex-direction: column;
+    position: relative;
+}
+
+.TextEditor-textarea-wrapper {
+    display: flex;
+    background-color: white;
+    border-radius: 3px;
+    border: 1px solid #E4E4E4;
+    flex: 1 0 auto;
+    height: 100%;
+}
+
+.TextEditor-textarea-wrapper.disabled {
+    background-color: #e8e8e8;
+}
+
+.TextEditor-textarea-line-numbers {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    line-height: 14px;
+    margin: 4px;
+    opacity: 0.5;
 }
 
 .TextEditor-textarea {
-    background-color: white;
-    margin: 0 !important;
-    padding: 0.5rem;
-    flex: 1 0 auto;
-    height: 100%;
-    font-size: 14px;
+    margin: -1px !important;
+    flex: 1 1 auto;
 }
 
 .TextEditor-warning {
-    color: #cb6f10;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    padding: 0.5rem;
+    width: 96%;
+    margin: 2%;
+
+    background-color: rgba(203, 110, 16, 0.8);
+    border: 1px solid rgb(203, 110, 16);
+    border-radius: 3px;
+    color: #ffffff;
+    font-style: italic;
 }
 
 
+/* INFO BUTTON */
 
 .InfoButton {
     opacity: 0.6;

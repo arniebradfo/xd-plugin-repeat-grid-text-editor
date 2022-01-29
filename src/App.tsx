@@ -191,15 +191,32 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
             className={['TextEditor', className].join(' ')}
             {...props}
         >
-            <textarea
-                className='TextEditor-textarea'
-                ref={textareaRef}
-                placeholder='Select a RepeatGrid'
-                value={value ? value : ''}
-                onChange={textUpdated}
-                onFocus={selectTextSelectionRange}
-                disabled={isOutsideEditContext}
-            />
+            <div
+                className={[
+                    'TextEditor-textarea-wrapper',
+                    isOutsideEditContext ? 'disabled' : undefined
+                ].join(' ')}
+            >
+                <div className='TextEditor-textarea-line-numbers'>
+                    {value.split('\n').map((_, index) => {
+                        let lineNumber = (index + 1).toString()
+                        if (lineNumber.length === 1)
+                            lineNumber = '0' + lineNumber
+                        return (
+                            <span key={lineNumber}>{lineNumber}</span>
+                        )
+                    })}
+                </div>
+                <textarea
+                    className='TextEditor-textarea'
+                    ref={textareaRef}
+                    placeholder='Select a RepeatGrid'
+                    value={value ? value : ''}
+                    onChange={textUpdated}
+                    onFocus={selectTextSelectionRange}
+                    disabled={isOutsideEditContext}
+                />
+            </div>
             {isOutsideEditContext && (
                 <div className='TextEditor-warning'>
                     Selected TextDataSeries is outside the Edit Context

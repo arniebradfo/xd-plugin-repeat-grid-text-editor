@@ -1,10 +1,7 @@
-- style - NEXT
-  - restyle
-  - textarea line numbers
-- keybindings
 - focus bug: textarea focus even when panel is closed
 - newline bug: strip newline characters, how to add a newline?
   - copy from excel to test
+- keybindings
 - createTextDataSeries detects 
   - or any node in RepeatGrid 
   - is Node in Component? return
