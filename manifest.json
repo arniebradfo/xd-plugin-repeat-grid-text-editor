@@ -18,14 +18,13 @@
             "type": "panel",
             "label": "Text Data Series Editor",
             "panelId": "app"
-        },
+        }
+    ],
+    "icons": [
         {
-            "type": "menu",
-            "label": "Log Selection",
-            "commandId": "logSelection",
-            "shortcut": {
-                "mac": "Ctrl+A"
-            }
+            "width": 48,
+            "height": 48,
+            "path": "logo.png"
         }
     ]
 }
