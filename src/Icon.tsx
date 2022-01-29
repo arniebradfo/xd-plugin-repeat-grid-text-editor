@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-interface IconProps extends React.HTMLProps<HTMLSpanElement> {
+export interface IconProps extends React.HTMLProps<HTMLSpanElement> {
     iconPath: IconPath
 }
 

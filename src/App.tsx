@@ -9,6 +9,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
     const [repeatGridTextDataSeries, setRepeatGridTextDataSeries] = useState<RepeatGridTextDataSeries>()
     const [selectedCellLocation, setSelectedCellLocation] = useState<CellLocation>()
+    const [isInfoOpen, setIsInfoOpen] = useState<boolean>(false)
 
     useEffect(() => {
         const _repeatGridTextDataSeries = createTextDataSeries(selection)
@@ -34,10 +35,13 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
         : undefined
 
     return (
-        <div className='App'>
+        <div className='App' >
 
             {showNoPanel && (
-                <div className='xd-heading'>Select A Repeat Grid</div>
+                // <div className='xd-heading'>Select A Repeat Grid</div>
+                <div className='SelectionPanel-footer'>
+                    Select A Repeat Grid
+                </div>
             )}
 
             {showSelectionPanel && (
@@ -46,13 +50,13 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                         <span className='xd-detail'>
                             {'Repeat Grid Text Objects'.toUpperCase()}
                         </span>
-                        <Icon iconPath='Info' />
+                        <InfoButton isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} onOpen={() => setIsInfoOpen(true)} />
                     </div>
                     <div className='SelectionPanel-list'>
                         <div className='SelectionPanel-list-item SelectionPanel-list-item-repeatgrid'>
                             <Icon iconPath='RepeatGrid' className='SelectionPanel-list-item-icon' />
                             <span className='SelectionPanel-list-item-text'>
-                                Repeat Grid Name
+                                {repeatGridTextDataSeries.repeatGrid.name}
                             </span>
                         </div>
                         {repeatGridTextDataSeries.textDataSeriesNodes.map((textDataSeriesNode, index) => (
@@ -69,8 +73,8 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                             </div>
                         ))}
                     </div>
-                    <div className='flex-splitter' />
-                    <sp-divider size="small"></sp-divider>
+                    {/* <div className='flex-splitter' /> */}
+                    {/* <sp-divider size="small"></sp-divider> */}
                     <div className='SelectionPanel-footer'>
                         Select a Text Object to edit
                     </div>
@@ -79,9 +83,12 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
             {showTextEditorPanel && (
                 <div className='TextEditorPanel'>
-                    <div className='TextEditorPanel-back xd-button' onClick={returnToHomePanel}>
-                        <Icon iconPath='ChevronLeftSmall' />{' '}
-                        <span className='xd-detail'>{'All Text Objects'.toUpperCase()}</span>
+                    <div className='TextEditorPanel-nav'>
+                        <div className='TextEditorPanel-back xd-button' onClick={returnToHomePanel}>
+                            <Icon iconPath='ChevronLeftSmall' />
+                            <span className='xd-detail text'>{'All Text Objects'.toUpperCase()}</span>
+                        </div>
+                        <InfoButton isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} onOpen={() => setIsInfoOpen(true)} />
                     </div>
                     <div className='TextEditorPanel-header xd-heading'>
                         {repeatGridTextDataSeries.textDataSeriesNodes[nodeIndexes!.current].name}
@@ -94,8 +101,14 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                     />
                     <sp-divider size="small"></sp-divider>
                     <div className='TextEditorPanel-footer'>
-                        <sp-action-button quiet onClick={() => selectTextNode(nodeIndexes!.previous)}>{'< Previous'}</sp-action-button>
-                        <sp-action-button quiet onClick={() => selectTextNode(nodeIndexes!.next)}>{'Next >'}</sp-action-button>
+                        <div className='xd-button xd-button--outlined' onClick={() => selectTextNode(nodeIndexes!.previous)}>
+                            <Icon iconPath='ChevronLeftSmall' />
+                            <span className='text'>{'Previous'}</span>
+                        </div>
+                        <div className='xd-button xd-button--outlined' onClick={() => selectTextNode(nodeIndexes!.next)}>
+                            <span className='text'>{'Next'}</span>
+                            <Icon iconPath='ChevronRightSmall' />
+                        </div>
                     </div>
                 </div>
             )}
@@ -209,4 +222,28 @@ const loopingPrevNextArrayIndex = (length: number, index: number) => {
     previous = previous < 0 ? length - 1 : previous
 
     return { current, next, previous }
+}
+
+
+export interface InfoButtonProps extends Omit<HTMLProps<HTMLDivElement>, 'onClick'> {
+    isOpen?: boolean
+    onOpen?(): void
+    onClose?(): void
+}
+
+const InfoButton: FC<InfoButtonProps> = ({ isOpen, onOpen, onClose, className, ...props }) => {
+    return (<>
+        <Icon
+            iconPath='Info'
+            onClick={isOpen ? onClose : onOpen}
+            className={[className, 'InfoButton'].join(' ')}
+            {...props}
+        />
+        {isOpen && (
+            <div>
+                <span onClick={onClose}>X</span>
+                Instructional Content
+            </div>
+        )}
+    </>)
 }

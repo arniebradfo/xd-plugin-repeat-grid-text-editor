@@ -5,15 +5,14 @@ html, body {
     padding: 0;
 }
 
-textarea {
-    font-size: 18px !important;
+.App {
+    font-size: 12px;
 }
-
 
 .xd-detail {
     /* https://spectrum.adobe.com/page/detail/ */
     font-size: 9px;
-    letter-spacing: 1.5;
+    letter-spacing: 1.2;
     /* text-transform: uppercase; // doesn't work in uxp */
 }
 
@@ -39,9 +38,18 @@ textarea {
 .xd-button {
     display: inline-flex;
     align-items: center;
-    padding: 0 0.25rem;
     height: 1.5rem;
+    padding: 0 0.25rem;
     border-radius: 3px;
+}
+
+.xd-button--outlined {
+    background-color: #FFFFFF;
+    border: 1px solid #DDDCDD;
+}
+
+.xd-button .text {
+    margin: -1px 4px 0;
 }
 
 .xd-button:hover {
@@ -67,11 +75,21 @@ textarea {
     height: 100%;
 }
 
+
+
 .SelectionPanel-header {
     display: flex;
     justify-content: space-between;
-    margin: 0.25rem 0 0.5rem;
+    /* margin: 0.5rem 0 0.75rem; */
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.SelectionPanel-header .xd-detail {
     opacity: 0.6;
+    display: inline-flex;
+    align-items: center;
+    height: 1.5rem;
 }
 
 .SelectionPanel-list {
@@ -124,8 +142,15 @@ textarea {
 .TextEditorPanel {}
 
 .TextEditorPanel-back {
-    margin: 0.25rem 0;
+    margin-left: -0.5rem;
     align-self: flex-start;
+}
+
+.TextEditorPanel-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
 }
 
 .TextEditorPanel-header {}
@@ -159,4 +184,10 @@ textarea {
 
 .TextEditor-warning {
     color: #cb6f10;
+}
+
+
+
+.InfoButton {
+    opacity: 0.6;
 }
