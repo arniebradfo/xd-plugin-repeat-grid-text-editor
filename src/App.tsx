@@ -218,7 +218,8 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                     isOutsideEditContext ? 'disabled' : undefined
                 ].join(' ')}
             >
-                <div className='TextEditor-textarea-line-numbers'>
+                {/* THE LINE NUMBERS DON'T ACCOUTN FOR LINE WRAPPING, SO THEY ARE COMMENTED FOR NOW :( */}
+                {/* <div className='TextEditor-textarea-line-numbers'>
                     {value.split('\n').map((_, index) => {
                         let lineNumber = (index + 1).toString()
                         if (lineNumber.length === 1)
@@ -227,7 +228,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                             <span key={lineNumber}>{lineNumber}</span>
                         )
                     })}
-                </div>
+                </div> */}
                 <textarea
                     className='TextEditor-textarea'
                     ref={textareaRef}
