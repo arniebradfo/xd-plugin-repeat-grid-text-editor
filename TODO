@@ -1,5 +1,3 @@
-- newline bug: strip newline characters, how to add a newline?
-  - copy from excel to test
 - keybindings
 - createTextDataSeries detects 
   - or any node in RepeatGrid 

@@ -70,7 +70,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                             >
                                 <Icon iconPath='TextObject' className='SelectionPanel-list-item-icon' />
                                 <span className='SelectionPanel-list-item-text'>
-                                    {textDataSeriesNode.name}
+                                    {textDataSeriesNode.name.replace(/\r/ig, ' ')}
                                 </span>
                                 <Icon iconPath='ChevronRight' className='SelectionPanel-list-item-arrow' />
                             </div>
@@ -151,20 +151,16 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     }, [selection.items[0], setValue, textDataSeriesNode])
 
     const textUpdated: ChangeEventHandler<HTMLTextAreaElement> = (event) => {
-        // if (!repeatGridTextDataSeries) return // unnecessary?
-
         let textValue = event.target.value
             .replace(/\t/ig, `\n`) // replace tabs and newlines with a newline
             .replace(/\r\n/ig, '\n') // remove \r from \r\n pasted values, which would create 2 newlines
-            .replace(/\r[^└]/ig, '\n') // remove all returns not followed by "└" 
-            .replace(/\\r/ig, '\r└'); // add return when manually typed // TODO add some kind of special marker at the first line for this?
-        // swap "└" for newline
+            .replace(/\r([^└])/ig, '\n$1') // remove all \r returns not followed by "└" 
+            .replace(/\\r/ig, '\r└'); // add return when manually typed
         setValue(textValue);
         const textDataSeries = textValue
-            .replace(/└/ig, '')
+            .replace(/└/ig, '') // remove "└"s
             .split('\n')
             .map(line => line === '' ? ' ' : line);
-
         const { node } = textDataSeriesNode
         editDocument({ editLabel: 'edit-text' }, selection => {
             repeatGridTextDataSeries.repeatGrid.attachTextDataSeries(node, textDataSeries)
