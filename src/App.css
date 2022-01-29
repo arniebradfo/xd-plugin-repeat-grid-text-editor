@@ -206,6 +206,7 @@ html, body {
 .TextEditor-textarea {
     margin: -1px !important;
     flex: 1 1 auto;
+    background-color: #FFFFFF;
 }
 
 .TextEditor-warning {

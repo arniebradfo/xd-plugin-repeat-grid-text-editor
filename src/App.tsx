@@ -10,11 +10,14 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
     const [repeatGridTextDataSeries, setRepeatGridTextDataSeries] = useState<RepeatGridTextDataSeries>()
     const [selectedCellLocation, setSelectedCellLocation] = useState<CellLocation>()
     const [isInfoOpen, setIsInfoOpen] = useState<boolean>(false)
+    const [shouldRetainFocus, setShouldRetainFocus] = useState<boolean>(false)
 
     useEffect(() => {
+        console.log('setRepeatGridTextDataSeries');
         const _repeatGridTextDataSeries = createTextDataSeries(selection)
         setRepeatGridTextDataSeries(_repeatGridTextDataSeries);
         setSelectedCellLocation(_repeatGridTextDataSeries?.cellLocation)
+        setShouldRetainFocus(false)
     }, [selection.items[0]])
 
     const selectTextNode = (index: number) => {
@@ -23,6 +26,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
             rowIndex: repeatGridTextDataSeries?.cellLocation?.rowIndex
         })
         setRepeatGridTextDataSeries(createTextDataSeries(selection));
+        setShouldRetainFocus(true)
     }
 
     const returnToHomePanel = () => setSelectedCellLocation(undefined)
@@ -97,7 +101,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                         className='TextEditorPanel-TextEditor'
                         repeatGridTextDataSeries={repeatGridTextDataSeries}
                         selectedCellLocation={selectedCellLocation}
-                        {...{ selection, root }}
+                        {...{ selection, root, shouldRetainFocus }}
                     />
                     <sp-divider size="small"></sp-divider>
                     <div className='TextEditorPanel-footer'>
@@ -119,7 +123,8 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
 export interface TextEditorPanelProps extends XdReactComponentProps, HTMLProps<HTMLDivElement> {
     repeatGridTextDataSeries: RepeatGridTextDataSeries,
-    selectedCellLocation: CellLocation
+    selectedCellLocation: CellLocation,
+    shouldRetainFocus?: boolean
 }
 
 export const TextEditor: FC<TextEditorPanelProps> = ({
@@ -127,11 +132,13 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     root,
     repeatGridTextDataSeries,
     selectedCellLocation,
+    shouldRetainFocus = false, 
     className,
     ...props
 }) => {
 
     const [value, setValue] = useState('')
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     const textDataSeriesNode = useMemo(() => (
         repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
@@ -158,6 +165,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     }
 
     const selectTextSelectionRange: FocusEventHandler<HTMLTextAreaElement> = useCallback((e) => {
+        e => console.log(e)
 
         let start = 0;
         let end = 0;
@@ -182,13 +190,26 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
 
     }, [selectedCellLocation, textDataSeriesNode])
 
-    // force focus on every render cycle to trigger selectTextSelectionRange()
-    const textareaRef = useRef<HTMLTextAreaElement>(null)
-    textareaRef.current?.focus()
+    const focusTextareaUnfocused = useCallback(() => {
+        // manually trigger focus rather than with a pointer event so we can setSelectionRange
+        if (document.activeElement !== textareaRef.current)
+            textareaRef.current?.focus()
+    }, [textDataSeriesNode])
+
+    useEffect(() => {
+        console.log({ shouldRetainFocus });
+        console.dir(textareaRef.current);
+        
+        if (shouldRetainFocus)
+            focusTextareaUnfocused()
+        else
+            textareaRef.current?.blur()
+    }, [shouldRetainFocus])
 
     return (
         <div
             className={['TextEditor', className].join(' ')}
+            onPointerEnter={focusTextareaUnfocused}
             {...props}
         >
             <div
@@ -210,16 +231,18 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                 <textarea
                     className='TextEditor-textarea'
                     ref={textareaRef}
-                    placeholder='Select a RepeatGrid'
+                    placeholder={`First Element Text\nSecond Element Text\nThird Element Text`}
                     value={value ? value : ''}
                     onChange={textUpdated}
                     onFocus={selectTextSelectionRange}
                     disabled={isOutsideEditContext}
+                    wrap='off'
                 />
             </div>
             {isOutsideEditContext && (
                 <div className='TextEditor-warning'>
-                    Selected TextDataSeries is outside the Edit Context
+                    Selected TextDataSeries is outside the Edit Context<br />
+                    Select the surrounding Repeat Grid to enable all editing
                 </div>
             )}
         </div>
@@ -264,3 +287,4 @@ const InfoButton: FC<InfoButtonProps> = ({ isOpen, onOpen, onClose, className, .
         )}
     </>)
 }
+
