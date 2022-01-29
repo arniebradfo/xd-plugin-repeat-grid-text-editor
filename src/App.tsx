@@ -195,15 +195,6 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
 
     }, [selectedCellLocation, textDataSeriesNode])
 
-    const handleShiftEnter: React.KeyboardEventHandler<HTMLTextAreaElement> = useCallback((e) => {
-        const isShiftEnter = e.key == 'Enter' && e.shiftKey
-        if (isShiftEnter) {
-            const { value, selectionStart, selectionEnd } = textareaRef.current!
-            console.log({ value, selectionStart, selectionEnd }) // selection range does not update ??!
-            e.currentTarget.value = value.slice(0, selectionStart) + '└' + value.slice(selectionEnd)
-        }
-    }, [])
-
     const focusTextareaUnfocused = useCallback(() => {
         // manually trigger focus rather than with a pointer event so we can setSelectionRange
         if (document.activeElement !== textareaRef.current)
@@ -229,7 +220,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                     isOutsideEditContext ? 'disabled' : undefined
                 ].join(' ')}
             >
-                {/* THE LINE NUMBERS DON'T ACCOUTN FOR LINE WRAPPING, SO THEY ARE COMMENTED FOR NOW :( */}
+                {/* THE LINE NUMBERS DON'T ACCOUNT FOR LINE WRAPPING, SO THEY ARE COMMENTED FOR NOW :( */}
                 {/* <div className='TextEditor-textarea-line-numbers'>
                     {value.split('\n').map((_, index) => {
                         let lineNumber = (index + 1).toString()
@@ -248,8 +239,6 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                     onChange={textUpdated}
                     onFocus={selectTextSelectionRange}
                     disabled={isOutsideEditContext}
-                    onKeyDown={handleShiftEnter}
-                // wrap='off' // doesn't work
                 />
             </div>
             {isOutsideEditContext && (
