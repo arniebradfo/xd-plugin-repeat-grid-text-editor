@@ -13,7 +13,6 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
     const [shouldRetainFocus, setShouldRetainFocus] = useState<boolean>(false)
 
     useEffect(() => {
-        console.log('setRepeatGridTextDataSeries');
         const _repeatGridTextDataSeries = createTextDataSeries(selection)
         setRepeatGridTextDataSeries(_repeatGridTextDataSeries);
         setSelectedCellLocation(_repeatGridTextDataSeries?.cellLocation)
@@ -132,7 +131,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     root,
     repeatGridTextDataSeries,
     selectedCellLocation,
-    shouldRetainFocus = false, 
+    shouldRetainFocus = false,
     className,
     ...props
 }) => {
@@ -154,9 +153,17 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     const textUpdated: ChangeEventHandler<HTMLTextAreaElement> = (event) => {
         // if (!repeatGridTextDataSeries) return // unnecessary?
 
-        const textValue = event.target.value
-        setValue(textValue)
-        const textDataSeries = textValue.split('\n').map(line => line === '' ? ' ' : line);
+        let textValue = event.target.value
+            .replace(/\t/ig, `\n`) // replace tabs and newlines with a newline
+            .replace(/\r\n/ig, '\n') // remove \r from \r\n pasted values, which would create 2 newlines
+            .replace(/\r[^└]/ig, '\n') // remove all returns not followed by "└" 
+            .replace(/\\r/ig, '\r└'); // add return when manually typed // TODO add some kind of special marker at the first line for this?
+        // swap "└" for newline
+        setValue(textValue);
+        const textDataSeries = textValue
+            .replace(/└/ig, '')
+            .split('\n')
+            .map(line => line === '' ? ' ' : line);
 
         const { node } = textDataSeriesNode
         editDocument({ editLabel: 'edit-text' }, selection => {
@@ -165,8 +172,6 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     }
 
     const selectTextSelectionRange: FocusEventHandler<HTMLTextAreaElement> = useCallback((e) => {
-        e => console.log(e)
-
         let start = 0;
         let end = 0;
         const { rowIndex } = selectedCellLocation;
@@ -190,6 +195,15 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
 
     }, [selectedCellLocation, textDataSeriesNode])
 
+    const handleShiftEnter: React.KeyboardEventHandler<HTMLTextAreaElement> = useCallback((e) => {
+        const isShiftEnter = e.key == 'Enter' && e.shiftKey
+        if (isShiftEnter) {
+            const { value, selectionStart, selectionEnd } = textareaRef.current!
+            console.log({ value, selectionStart, selectionEnd }) // selection range does not update ??!
+            e.currentTarget.value = value.slice(0, selectionStart) + '└' + value.slice(selectionEnd)
+        }
+    }, [])
+
     const focusTextareaUnfocused = useCallback(() => {
         // manually trigger focus rather than with a pointer event so we can setSelectionRange
         if (document.activeElement !== textareaRef.current)
@@ -197,9 +211,6 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     }, [textDataSeriesNode])
 
     useEffect(() => {
-        console.log({ shouldRetainFocus });
-        console.dir(textareaRef.current);
-        
         if (shouldRetainFocus)
             focusTextareaUnfocused()
         else
@@ -237,7 +248,8 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                     onChange={textUpdated}
                     onFocus={selectTextSelectionRange}
                     disabled={isOutsideEditContext}
-                    wrap='off'
+                    onKeyDown={handleShiftEnter}
+                // wrap='off' // doesn't work
                 />
             </div>
             {isOutsideEditContext && (
