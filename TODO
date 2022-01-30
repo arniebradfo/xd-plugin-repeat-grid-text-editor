@@ -1,6 +1,6 @@
 - test (anything else?)
 - bugs
-  - can't type...
+  - picks the last text node as default name
   - disabled is sometimes white bg?
   - when text wraps 
     - make the actual text area width:9999px and scroll on overflow?

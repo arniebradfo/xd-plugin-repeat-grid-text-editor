@@ -92,9 +92,6 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                         ))}
                     </div>
 
-                    {/* <div className='flex-splitter' /> */}
-                    {/* <sp-divider size="small"></sp-divider> */}
-
                     <div className='SelectionPanel-footer xd-hint'>
                         Select a Text Object to edit
                     </div>
@@ -119,8 +116,6 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
                     <TextEditor
                         className='TextEditorPanel-TextEditor'
-                        // repeatGridTextDataSeries={repeatGridTextDataSeries}
-                        // selectedCellLocation={selectedCellLocation}
                         onTabNext={navigateNext}
                         onTabPrevious={navigatePrevious}
                         {...{
@@ -193,10 +188,6 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const proxyInputRef = useRef<HTMLInputElement>(null)
 
-    /* const textDataSeriesNode = useMemo(() => (
-        repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
-    ), [repeatGridTextDataSeries, selectedCellLocation]) */
-
     useEffect(() => {
         const { textDataSeries } = textDataSeriesNode
         setValue(textDataSeries.join('\n'))
@@ -238,7 +229,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
         currentTarget.setSelectionRange(0, end ? 0 : 1);
 
         // set selection to the correct value in the next frame
-        // this tricks UXP into the correct behavior
+        // setTimeout tricks UXP into the correct behavior
         setTimeout(() => currentTarget.setSelectionRange(start, end), 1);
 
     }, [selectedCellLocation, textDataSeriesNode])
@@ -256,7 +247,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
             focusTextareaUnfocused()
         else
             textareaRef.current?.blur()
-    })
+    }, [shouldRetainFocus, textDataSeriesNode])
 
     return (
         <div
