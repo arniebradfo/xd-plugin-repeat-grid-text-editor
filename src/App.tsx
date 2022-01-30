@@ -1,6 +1,6 @@
 import { editDocument } from 'application';
 import React, { ChangeEventHandler, FC, FocusEventHandler, HTMLProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CellLocation, createTextDataSeries, isInEditContext, RepeatGridTextDataSeries } from './createTextDataSeries';
+import { CellLocation, createTextDataSeries, isInEditContext, RepeatGridTextDataSeries, TextDataSeriesNode } from './createTextDataSeries';
 import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
 import './App.css'
 import { Icon } from './Icon';
@@ -40,6 +40,13 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
     const navigateNext = () => selectTextNode(nodeIndexes!.next)
     const navigatePrevious = () => selectTextNode(nodeIndexes!.previous)
 
+    const textDataSeriesNode = useMemo(() => (
+        (repeatGridTextDataSeries == null || selectedCellLocation == null)
+            ? undefined
+            : repeatGridTextDataSeries?.textDataSeriesNodes[selectedCellLocation?.columnIndex]
+    ), [repeatGridTextDataSeries, selectedCellLocation])
+    const disabled = textDataSeriesNode ? !isInEditContext(selection, textDataSeriesNode.node) : true
+
     return (
         <div className='App' >
 
@@ -55,10 +62,17 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                     <div className='SelectionPanel-list'>
                         <div className='SelectionPanel-list-item SelectionPanel-list-item-repeatgrid'>
                             <Icon iconPath='RepeatGrid' className='SelectionPanel-list-item-icon' />
-                            <span className='SelectionPanel-list-item-text'>
+                            <span className='SelectionPanel-list-item-name'>
                                 {repeatGridTextDataSeries.repeatGrid.name}
                             </span>
                         </div>
+                        {repeatGridTextDataSeries.textDataSeriesNodes.length === 0 && (
+                            <div className='SelectionPanel-list-item SelectionPanel-list-item-textobject disabled' >
+                                <span className='SelectionPanel-list-item-name xd-hint' >
+                                    No Text Objects
+                                </span>
+                            </div>
+                        )}
                         {repeatGridTextDataSeries.textDataSeriesNodes.map((textDataSeriesNode, index) => (
                             <div
                                 key={textDataSeriesNode.node.guid}
@@ -66,7 +80,12 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                                 className='SelectionPanel-list-item SelectionPanel-list-item-textobject'
                             >
                                 <Icon iconPath='TextObject' className='SelectionPanel-list-item-icon' />
-                                <span className='SelectionPanel-list-item-text'>
+                                <span
+                                    className={[
+                                        'SelectionPanel-list-item-name',
+                                        isInEditContext(selection, textDataSeriesNode.node) ? undefined : 'disabled'
+                                    ].join(' ')}
+                                >
                                     {textDataSeriesNode.name.replace(/\r/ig, ' ')}
                                 </span>
                                 <Icon iconPath='ChevronRight' className='SelectionPanel-list-item-arrow' />
@@ -92,7 +111,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                 </div>
             )}
 
-            {showTextEditorPanel && (
+            {showTextEditorPanel && textDataSeriesNode && (
                 <div className='TextEditorPanel'>
 
                     <div className='TextEditorPanel-header xd-heading'>
@@ -101,11 +120,19 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
                     <TextEditor
                         className='TextEditorPanel-TextEditor'
-                        repeatGridTextDataSeries={repeatGridTextDataSeries}
-                        selectedCellLocation={selectedCellLocation}
+                        // repeatGridTextDataSeries={repeatGridTextDataSeries}
+                        // selectedCellLocation={selectedCellLocation}
                         onTabNext={navigateNext}
                         onTabPrevious={navigatePrevious}
-                        {...{ selection, root, shouldRetainFocus }}
+                        {...{
+                            selection,
+                            root,
+                            selectedCellLocation,
+                            repeatGridTextDataSeries,
+                            textDataSeriesNode,
+                            shouldRetainFocus,
+                            disabled
+                        }}
                     />
 
                     <sp-divider size="small" class="TextEditorPanel-divider"></sp-divider>
@@ -142,6 +169,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
 export interface TextEditorPanelProps extends XdReactComponentProps, HTMLProps<HTMLDivElement> {
     repeatGridTextDataSeries: RepeatGridTextDataSeries,
+    textDataSeriesNode: TextDataSeriesNode,
     selectedCellLocation: CellLocation,
     shouldRetainFocus?: boolean,
     onTabNext?(): void,
@@ -152,11 +180,13 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     selection,
     root,
     repeatGridTextDataSeries,
+    textDataSeriesNode,
     selectedCellLocation,
     shouldRetainFocus = false,
     className,
     onTabNext,
     onTabPrevious,
+    disabled,
     ...props
 }) => {
 
@@ -164,12 +194,9 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const proxyInputRef = useRef<HTMLInputElement>(null)
 
-    const textDataSeriesNode = useMemo(() => (
+    /* const textDataSeriesNode = useMemo(() => (
         repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
-    ), [repeatGridTextDataSeries, selectedCellLocation])
-
-    // TODO: move up to parent component
-    const isOutsideEditContext = !isInEditContext(selection, textDataSeriesNode.node)
+    ), [repeatGridTextDataSeries, selectedCellLocation]) */
 
     useEffect(() => {
         const { textDataSeries } = textDataSeriesNode
@@ -220,10 +247,10 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     const focusTextareaUnfocused = useCallback(() => {
         // manually trigger focus rather than with a pointer event so we can setSelectionRange
         if (document.activeElement !== textareaRef.current) {
-            const ref = isOutsideEditContext ? proxyInputRef : textareaRef
+            const ref = disabled ? proxyInputRef : textareaRef
             ref.current?.focus()
         }
-    }, [textDataSeriesNode, isOutsideEditContext])
+    }, [textDataSeriesNode, disabled])
 
     useEffect(() => {
         if (shouldRetainFocus)
@@ -236,7 +263,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
         <div
             className={['TextEditor', className].join(' ')}
             onPointerEnter={focusTextareaUnfocused}
-            onClick={isOutsideEditContext ? focusTextareaUnfocused : undefined}
+            onClick={disabled ? focusTextareaUnfocused : undefined}
             {...props}
         >
 
@@ -263,11 +290,11 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                     value={value ? value : ''}
                     onChange={textUpdated}
                     onFocus={selectTextSelectionRange}
-                    disabled={isOutsideEditContext}
-                    style={isOutsideEditContext ? { pointerEvents: 'none' } : undefined}
+                    disabled={disabled}
+                    style={disabled ? { pointerEvents: 'none' } : undefined}
                 />
 
-                {isOutsideEditContext && (
+                {disabled && (
                     <input ref={proxyInputRef} hidden className='TextEditor-hidden-nav-input' />
                 )}
 
@@ -275,7 +302,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
 
             </form>
 
-            {isOutsideEditContext && (
+            {disabled && (
                 <div className='TextEditor-warning xd-alert'>
                     <h4>Cannot Edit</h4>
                     Selected TextDataSeries is outside the Edit Context. {' '}

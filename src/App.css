@@ -70,7 +70,7 @@ html, body {
 }
 
 .xd-button:active {
-    background-color: #E6E6E6;
+    background-color: #e0e0e0;
 }
 
 .xd-alert {
@@ -130,7 +130,7 @@ html, body {
     padding-left: 32px;
 }
 
-.SelectionPanel-list-item-textobject:hover {
+.SelectionPanel-list-item-textobject:not(.disabled):hover {
     background-color: #E6F3FB;
 }
 
@@ -138,9 +138,13 @@ html, body {
     opacity: 0.4;
 }
 
-.SelectionPanel-list-item-text {
+.SelectionPanel-list-item-name {
     flex: 1 1 auto;
     margin: 0 0.5rem;
+}
+
+.SelectionPanel-list-item-name.disabled {
+    opacity: 0.4;
 }
 
 .SelectionPanel-list-item-arrow {
