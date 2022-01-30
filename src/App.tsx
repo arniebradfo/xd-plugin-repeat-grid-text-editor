@@ -76,7 +76,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
                     {/* <div className='flex-splitter' /> */}
                     {/* <sp-divider size="small"></sp-divider> */}
-                    
+
                     <div className='SelectionPanel-footer xd-hint'>
                         Select a Text Object to edit
                     </div>
@@ -168,6 +168,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
         repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
     ), [repeatGridTextDataSeries, selectedCellLocation])
 
+    // TODO: move up to parent component
     const isOutsideEditContext = !isInEditContext(selection, textDataSeriesNode.node)
 
     useEffect(() => {
@@ -328,7 +329,7 @@ const InfoButton: FC<InfoButtonProps> = ({ isOpen, onOpen, onClose, className, .
                         ['Shift+Tab', 'Previous Text Object'],
                         ['Type "\\r"', 'Insert a carriage return'],
                     ].map(([command, hint]) => (
-                        <div className='InfoPanel-grid'>
+                        <div className='InfoPanel-grid' key={command}>
                             <span className='InfoPanel-grid-command'>{command}</span>
                             <span className='xd-hint'>{hint}</span>
                         </div>
