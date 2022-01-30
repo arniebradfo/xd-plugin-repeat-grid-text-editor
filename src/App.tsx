@@ -1,10 +1,9 @@
-import { editDocument } from 'application';
 import React, { ChangeEventHandler, FC, FocusEventHandler, HTMLProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CellLocation, createTextDataSeries, isInEditContext, RepeatGridTextDataSeries, TextDataSeriesNode } from './createTextDataSeries';
-import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
+import { editDocument } from 'application';
 import './App.css'
+import { XdReactComponent, XdReactComponentProps } from './util/panel-controller';
+import { CellLocation, createTextDataSeries, isInEditContext, RepeatGridTextDataSeries, TextDataSeriesNode } from './createTextDataSeries';
 import { Icon } from './Icon';
-import { logEvent } from './eventBindings';
 
 export const App: XdReactComponent = ({ selection, root, ...props }) => {
 

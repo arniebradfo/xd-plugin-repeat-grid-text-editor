@@ -1,5 +1,6 @@
 - test (anything else?)
 - bugs
+  - can't type...
   - disabled is sometimes white bg?
   - when text wraps 
     - make the actual text area width:9999px and scroll on overflow?

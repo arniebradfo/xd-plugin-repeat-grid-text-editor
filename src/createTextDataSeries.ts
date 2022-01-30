@@ -68,13 +68,13 @@ function getSceneNodeLeaves<T extends GraphicNode = GraphicNode>(
     boundaryTypes: (typeof SceneNode)[] = [RepeatGrid, SymbolInstance]
 ): NodeAndPath<T>[] {
 
-    // TODO: check for RepeatGrid or Component instance
+    // check for RepeatGrid or Component instance
     if (boundaryTypes.find(BoundaryType => node instanceof BoundaryType) != null)
         return []
 
     if (node.children.length === 0) {
         const graphicNode = node as GraphicNode
-        // TODO: check for Text node
+        // check for Text node
         if (graphicNode instanceof Type)
             return [{ node: graphicNode as T, indexPath }]
         else

@@ -23,7 +23,7 @@
     "tab"
   ],
   "author": "James Bradford",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/arniebradfo/xd-plugin-repeat-grid-tabber/issues"
   },
