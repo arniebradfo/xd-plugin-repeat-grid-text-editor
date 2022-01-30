@@ -10,7 +10,7 @@ export const createTextDataSeries = function (selection: Selection, root?: RootN
     const { node: repeatGrid, indexPath: pathFromSelected } = findPathToRepeatGridAncestor
 
     // traverse the selected repeatGrid child and set of Text Nodes 
-    const selectedRowIndex = pathFromSelected[0]
+    const selectedRowIndex = pathFromSelected[0] || 0
     const selectedRepeatCell = repeatGrid.children.at(selectedRowIndex)
     if (!selectedRepeatCell) return
     const leaves = getSceneNodeLeaves<Text>(selectedRepeatCell, [], Text)

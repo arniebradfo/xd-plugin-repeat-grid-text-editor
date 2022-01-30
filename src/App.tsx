@@ -28,7 +28,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
         setRepeatGridTextDataSeries(createTextDataSeries(selection));
     }
 
-    const returnToHomePanel = () => setSelectedCellLocation(undefined)
+    const navigateBack = () => setSelectedCellLocation(undefined)
     const showNoPanel = !repeatGridTextDataSeries
     const showSelectionPanel = repeatGridTextDataSeries && selectedCellLocation == null
     const showTextEditorPanel = repeatGridTextDataSeries && selectedCellLocation != null
@@ -42,7 +42,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
     const textDataSeriesNode = useMemo(() => (
         (repeatGridTextDataSeries == null || selectedCellLocation == null)
             ? undefined
-            : repeatGridTextDataSeries?.textDataSeriesNodes[selectedCellLocation?.columnIndex]
+            : repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
     ), [repeatGridTextDataSeries, selectedCellLocation])
     const disabled = textDataSeriesNode ? !isInEditContext(selection, textDataSeriesNode.node) : true
 
@@ -147,7 +147,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
                     {/* PUTTING THIS LAST IS THE ONLY WAY TO GET IT TO Z-INDEX CORRECTLY */}
                     <div className='TextEditorPanel-nav'>
-                        <div className='TextEditorPanel-back xd-button' onClick={returnToHomePanel}>
+                        <div className='TextEditorPanel-back xd-button' onClick={navigateBack}>
                             <Icon iconPath='ChevronLeftSmall' />
                             <span className='xd-detail text'>{'All Text Objects'.toUpperCase()}</span>
                         </div>
