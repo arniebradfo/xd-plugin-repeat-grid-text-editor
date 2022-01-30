@@ -73,6 +73,18 @@ html, body {
     background-color: #E6E6E6;
 }
 
+.xd-alert {
+    padding: 0.75rem;
+    background-color: #e68619;
+    border-radius: 2px;
+    color: #ffffff;
+}
+
+.xd-hint {
+    font-style: italic;
+    opacity: 0.6;
+}
+
 .uxp-plugin {
     /* Xd doesn't actually use Adobe Clean */
     /* font-family: Adobe Clean, sans-serif; */
@@ -87,6 +99,8 @@ html, body {
     /* margin: 0.5rem 0 0.75rem; */
     align-items: center;
     margin-bottom: 0.5rem;
+    z-index: 9;
+    order: 0;
 }
 
 .SelectionPanel-header .xd-detail {
@@ -99,6 +113,7 @@ html, body {
 .SelectionPanel-list {
     background-color: #FFFFFF;
     margin: 0 -12px;
+    order: 1;
 }
 
 .SelectionPanel-list-item {
@@ -138,8 +153,7 @@ html, body {
 
 .SelectionPanel-footer {
     padding-top: 12px;
-    font-style: italic;
-    opacity: 0.6;
+    order: 2;
 }
 
 
@@ -157,19 +171,33 @@ html, body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.25rem;
+    order: 0;
 }
 
-.TextEditorPanel-header {}
+.TextEditorPanel-header {
+    order: 1;
+}
 
 .TextEditorPanel-TextEditor {
     flex: 1 1 auto;
     margin: 0.5rem 0 1rem;
+    order: 2;
+}
+
+.TextEditorPanel-divider {
+    order: 3;
 }
 
 .TextEditorPanel-footer {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding-top: 12px;
+    order: 4;
+}
+
+.TextEditorPanel-footer .xd-hint {
+    margin: 0 0.5rem;
 }
 
 
@@ -224,20 +252,70 @@ html, body {
     left: 0;
     right: 0;
 
-    padding: 0.5rem;
     width: calc(100% - 1rem);
     margin: 0.5rem;
+}
 
-    background-color: rgba(203, 110, 16, 0.8);
-    border: 1px solid rgb(203, 110, 16);
-    border-radius: 3px;
-    color: #ffffff;
-    font-style: italic;
+.TextEditor-warning h4 {
+    margin-bottom: 0.25rem;
 }
 
 
 /* INFO BUTTON */
 
+.InfoWrapper {
+    position: relative;
+    z-index: 9;
+}
+
+.InfoWrapper:before {
+    position: absolute;
+    border-radius: 99px;
+    top: -1rem;
+    right: -1rem;
+    bottom: -1rem;
+    left: -1rem;
+    /* background-color: hotpink; */
+}
+
 .InfoButton {
     opacity: 0.6;
+}
+
+.InfoPanel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    padding: 1.5rem;
+    z-index: 9;
+    border: 1px solid #cfcfcf;
+    font-size: 14px;
+    width: 280px;
+    margin: 0.25rem 0;
+
+    /* neither of these work */
+    /* box-shadow: 0 0 0 1px rgb(16 22 26 / 10%),  0 2px 6px rgb(16 22 26 / 20%); */
+    /* filter: drop-shadow(rgba(0, 0, 0, 0.15) 0px 1px 4px); */
+}
+
+.InfoPanel-header {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.InfoPanel-grid {
+    display: flex;
+    margin-bottom: 0.25rem;
+}
+
+.InfoPanel-grid span {
+    white-space: nowrap;
+}
+
+.InfoPanel-grid-command {
+    width: 80px;
+    flex: 0 0 auto;
 }

@@ -3,12 +3,10 @@
   - is Node in Component? return
   - is Path SceneNode?
   - detects non Text Node in Leaves
-- instructions
-  - newline
-  - keybindings
 - test - bugs
   - when text wraps 
     - make the actual text area width:9999px and scroll on overflow?
     - remove line numbers
 - refactor
   - split into smaller components
+- rename to "Repeat Grid Text Editor"

@@ -44,20 +44,14 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
         <div className='App' >
 
             {showNoPanel && (
-                // <div className='xd-heading'>Select A Repeat Grid</div>
-                <div className='SelectionPanel-footer'>
+                <div className='SelectionPanel-footer xd-hint'>
                     Select A Repeat Grid
                 </div>
             )}
 
             {showSelectionPanel && (
                 <div className='SelectionPanel'>
-                    <div className='SelectionPanel-header'>
-                        <span className='xd-detail'>
-                            {'Repeat Grid Text Objects'.toUpperCase()}
-                        </span>
-                        <InfoButton isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} onOpen={() => setIsInfoOpen(true)} />
-                    </div>
+
                     <div className='SelectionPanel-list'>
                         <div className='SelectionPanel-list-item SelectionPanel-list-item-repeatgrid'>
                             <Icon iconPath='RepeatGrid' className='SelectionPanel-list-item-icon' />
@@ -79,26 +73,32 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                             </div>
                         ))}
                     </div>
+
                     {/* <div className='flex-splitter' /> */}
                     {/* <sp-divider size="small"></sp-divider> */}
-                    <div className='SelectionPanel-footer'>
+                    
+                    <div className='SelectionPanel-footer xd-hint'>
                         Select a Text Object to edit
                     </div>
+
+                    {/* PUTTING THIS LAST IS THE ONLY WAY TO GET IT TO Z-INDEX CORRECTLY */}
+                    <div className='SelectionPanel-header'>
+                        <span className='xd-detail'>
+                            {'Repeat Grid Text Objects'.toUpperCase()}
+                        </span>
+                        <InfoButton isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} onOpen={() => setIsInfoOpen(true)} />
+                    </div>
+
                 </div>
             )}
 
             {showTextEditorPanel && (
                 <div className='TextEditorPanel'>
-                    <div className='TextEditorPanel-nav'>
-                        <div className='TextEditorPanel-back xd-button' onClick={returnToHomePanel}>
-                            <Icon iconPath='ChevronLeftSmall' />
-                            <span className='xd-detail text'>{'All Text Objects'.toUpperCase()}</span>
-                        </div>
-                        <InfoButton isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} onOpen={() => setIsInfoOpen(true)} />
-                    </div>
+
                     <div className='TextEditorPanel-header xd-heading'>
                         {repeatGridTextDataSeries.textDataSeriesNodes[nodeIndexes!.current].name}
                     </div>
+
                     <TextEditor
                         className='TextEditorPanel-TextEditor'
                         repeatGridTextDataSeries={repeatGridTextDataSeries}
@@ -107,17 +107,32 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                         onTabPrevious={navigatePrevious}
                         {...{ selection, root, shouldRetainFocus }}
                     />
-                    <sp-divider size="small"></sp-divider>
+
+                    <sp-divider size="small" class="TextEditorPanel-divider"></sp-divider>
+
                     <div className='TextEditorPanel-footer'>
                         <div className='xd-button xd-button--outlined' onClick={navigatePrevious}>
                             <Icon iconPath='ChevronLeftSmall' />
                             <span className='text'>{'Previous'}</span>
                         </div>
+                        <span className='xd-hint'>Shift+Tab</span>
+                        <div className='flex-splitter' />
+                        <span className='xd-hint'>Tab</span>
                         <div className='xd-button xd-button--outlined' onClick={navigateNext}>
                             <span className='text'>{'Next'}</span>
                             <Icon iconPath='ChevronRightSmall' />
                         </div>
                     </div>
+
+                    {/* PUTTING THIS LAST IS THE ONLY WAY TO GET IT TO Z-INDEX CORRECTLY */}
+                    <div className='TextEditorPanel-nav'>
+                        <div className='TextEditorPanel-back xd-button' onClick={returnToHomePanel}>
+                            <Icon iconPath='ChevronLeftSmall' />
+                            <span className='xd-detail text'>{'All Text Objects'.toUpperCase()}</span>
+                        </div>
+                        <InfoButton isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} onOpen={() => setIsInfoOpen(true)} />
+                    </div>
+
                 </div>
             )}
 
@@ -260,7 +275,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
             </form>
 
             {isOutsideEditContext && (
-                <div className='TextEditor-warning'>
+                <div className='TextEditor-warning xd-alert'>
                     <h4>Cannot Edit</h4>
                     Selected TextDataSeries is outside the Edit Context. {' '}
                     Select the surrounding Repeat Grid to enable all editing.
@@ -294,18 +309,32 @@ export interface InfoButtonProps extends Omit<HTMLProps<HTMLDivElement>, 'onClic
 }
 
 const InfoButton: FC<InfoButtonProps> = ({ isOpen, onOpen, onClose, className, ...props }) => {
-    return (<>
-        <Icon
-            iconPath='Info'
-            onClick={isOpen ? onClose : onOpen}
-            className={[className, 'InfoButton'].join(' ')}
+    return (
+        <div
+            className={[className, 'InfoWrapper'].join(' ')}
+            onPointerLeave={onClose}
             {...props}
-        />
-        {isOpen && (
-            <div>
-                <span onClick={onClose}>X</span>
-                Instructional Content
-            </div>
-        )}
-    </>)
+        >
+            <Icon
+                iconPath='Info'
+                onClick={isOpen ? onClose : onOpen}
+                className='InfoButton'
+            />
+            {isOpen && (
+                <div className='InfoPanel'>
+                    <div className='InfoPanel-header'>Keybindings</div>
+                    {[
+                        ['Tab', 'Next Text Object'],
+                        ['Shift+Tab', 'Previous Text Object'],
+                        ['Type "\\r"', 'Insert a carriage return'],
+                    ].map(([command, hint]) => (
+                        <div className='InfoPanel-grid'>
+                            <span className='InfoPanel-grid-command'>{command}</span>
+                            <span className='xd-hint'>{hint}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div >
+    )
 }
