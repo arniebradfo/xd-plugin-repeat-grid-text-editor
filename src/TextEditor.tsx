@@ -26,14 +26,14 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     ...props
 }) => {
 
-    const [value, setValue] = useState('')
-    const textareaRef = useRef<HTMLTextAreaElement>(null)
-    const proxyInputRef = useRef<HTMLInputElement>(null)
+    const [value, setValue] = useState('');
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const proxyInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        const { textDataSeries } = textDataSeriesNode
-        setValue(textDataSeries.join('\n'))
-    }, [selection.items[0], setValue, textDataSeriesNode])
+        const { textDataSeries } = textDataSeriesNode;
+        setValue(textDataSeries.join('\n'));
+    }, [selection.items[0], setValue, textDataSeriesNode]);
 
     const textUpdated: ChangeEventHandler<HTMLTextAreaElement> = (event) => {
         let textValue = event.target.value
@@ -46,11 +46,11 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
             .replace(/└/ig, '') // remove "└"s
             .split('\n')
             .map(line => line === '' ? ' ' : line);
-        const { node } = textDataSeriesNode
+        const { node } = textDataSeriesNode;
         editDocument({ editLabel: 'edit-text' }, selection => {
             repeatGridTextDataSeries.repeatGrid.attachTextDataSeries(node, textDataSeries)
-        })
-    }
+        });
+    };
 
     const selectTextSelectionRange: FocusEventHandler<HTMLTextAreaElement> = useCallback((e) => {
         let start = 0;
@@ -63,7 +63,7 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
                 .join('\n')
                 .length + (rowIndex > 0 ? 1 : 0);
             end = start + textDataSeriesNode.textDataSeries[rowIndex].length;
-        }
+        };
 
         const { currentTarget } = e;
 
@@ -79,17 +79,17 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
     const focusTextareaUnfocused = useCallback(() => {
         // manually trigger focus rather than with a pointer event so we can setSelectionRange
         if (document.activeElement !== textareaRef.current) {
-            const ref = disabled ? proxyInputRef : textareaRef
-            ref.current?.focus()
+            const ref = disabled ? proxyInputRef : textareaRef;
+            ref.current?.focus();
         }
-    }, [textDataSeriesNode, disabled])
+    }, [textDataSeriesNode, disabled]);
 
     useEffect(() => {
         if (shouldRetainFocus)
-            focusTextareaUnfocused()
+            focusTextareaUnfocused();
         else
-            textareaRef.current?.blur()
-    }, [shouldRetainFocus, textDataSeriesNode])
+            textareaRef.current?.blur();
+    }, [shouldRetainFocus, textDataSeriesNode]);
 
     return (
         <div

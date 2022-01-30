@@ -35,5 +35,5 @@ export const InfoButton: FC<InfoButtonProps> = ({ isOpen, onOpen, onClose, class
                 </div>
             )}
         </div >
-    )
-}
+    );
+};

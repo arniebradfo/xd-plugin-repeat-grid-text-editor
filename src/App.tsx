@@ -1,4 +1,4 @@
-import React, { FC, HTMLProps, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './App.css'
 import { XdReactComponent } from './util/panel-controller';
 import { CellLocation, createTextDataSeries, isInEditContext, RepeatGridTextDataSeries } from './createTextDataSeries';
@@ -8,44 +8,44 @@ import { InfoButton } from './InfoButton';
 
 export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
-    const [repeatGridTextDataSeries, setRepeatGridTextDataSeries] = useState<RepeatGridTextDataSeries>()
-    const [selectedCellLocation, setSelectedCellLocation] = useState<CellLocation>()
-    const [isInfoOpen, setIsInfoOpen] = useState<boolean>(false)
-    const [shouldRetainFocus, setShouldRetainFocus] = useState<boolean>(false)
+    const [repeatGridTextDataSeries, setRepeatGridTextDataSeries] = useState<RepeatGridTextDataSeries>();
+    const [selectedCellLocation, setSelectedCellLocation] = useState<CellLocation>();
+    const [isInfoOpen, setIsInfoOpen] = useState<boolean>(false);
+    const [shouldRetainFocus, setShouldRetainFocus] = useState<boolean>(false);
 
     useEffect(() => {
-        setShouldRetainFocus(false)
-        const _repeatGridTextDataSeries = createTextDataSeries(selection)
+        setShouldRetainFocus(false);
+        const _repeatGridTextDataSeries = createTextDataSeries(selection);
         setRepeatGridTextDataSeries(_repeatGridTextDataSeries);
-        setSelectedCellLocation(_repeatGridTextDataSeries?.cellLocation)
-    }, [selection.items[0]])
+        setSelectedCellLocation(_repeatGridTextDataSeries?.cellLocation);
+    }, [selection.items[0]]);
 
     const selectTextNode = (index: number) => {
-        setShouldRetainFocus(true)
+        setShouldRetainFocus(true);
         setSelectedCellLocation({
             columnIndex: index,
             rowIndex: repeatGridTextDataSeries?.cellLocation?.rowIndex
-        })
+        });
         setRepeatGridTextDataSeries(createTextDataSeries(selection));
-    }
+    };
 
     const textDataSeriesNode = useMemo(() => (
         (repeatGridTextDataSeries == null || selectedCellLocation == null)
             ? undefined
             : repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
-    ), [repeatGridTextDataSeries, selectedCellLocation])
-    const disabled = textDataSeriesNode ? !isInEditContext(selection, textDataSeriesNode.node) : true
+    ), [repeatGridTextDataSeries, selectedCellLocation]);
+    const disabled = textDataSeriesNode ? !isInEditContext(selection, textDataSeriesNode.node) : true;
 
-    const navigateBack = () => setSelectedCellLocation(undefined)
-    const showNoPanel = !repeatGridTextDataSeries
-    const showSelectionPanel = repeatGridTextDataSeries && selectedCellLocation == null
-    const showTextEditorPanel = repeatGridTextDataSeries && selectedCellLocation != null && textDataSeriesNode
+    const navigateBack = () => setSelectedCellLocation(undefined);
+    const showNoPanel = !repeatGridTextDataSeries;
+    const showSelectionPanel = repeatGridTextDataSeries && selectedCellLocation == null;
+    const showTextEditorPanel = repeatGridTextDataSeries && selectedCellLocation != null && textDataSeriesNode;
 
     const nodeIndexes = showTextEditorPanel
         ? loopingPrevNextArrayIndex(repeatGridTextDataSeries.textDataSeriesNodes.length, selectedCellLocation.columnIndex)
-        : undefined
-    const navigateNext = () => selectTextNode(nodeIndexes!.next)
-    const navigatePrevious = () => selectTextNode(nodeIndexes!.previous)
+        : undefined;
+    const navigateNext = () => selectTextNode(nodeIndexes!.next);
+    const navigatePrevious = () => selectTextNode(nodeIndexes!.previous);
 
     const InfoButton2 = () => (
         <InfoButton
@@ -53,7 +53,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
             onClose={() => setIsInfoOpen(false)}
             onOpen={() => setIsInfoOpen(true)}
         />
-    )
+    );
 
     return (
         <div className='App' >
@@ -167,21 +167,21 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
             )}
 
         </div>
-    )
-}
+    );
+};
 
 const loopingPrevNextArrayIndex = (length: number, index: number) => {
 
-    const current = index
-    let next = current + 1
-    let previous = current - 1
+    const current = index;
+    let next = current + 1;
+    let previous = current - 1;
 
     // if last item, loop to start
-    next = next === length ? 0 : next
+    next = next === length ? 0 : next;
 
     // if first item, loop to end
-    previous = previous < 0 ? length - 1 : previous
+    previous = previous < 0 ? length - 1 : previous;
 
     return { current, next, previous }
-}
+};
 

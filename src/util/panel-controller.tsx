@@ -23,7 +23,7 @@ export default class PanelController {
     }
 
     update = (selection: Selection, root: RootNode) => {
-        const App = this.app
+        const App = this.app;
         ReactDOM.render(<App selection={selection} root={root} />, this.rootNode);
     }
 };

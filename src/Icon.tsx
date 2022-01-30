@@ -6,7 +6,7 @@ export interface IconProps extends React.HTMLProps<HTMLSpanElement> {
 }
 
 export const Icon: React.FC<IconProps> = ({ iconPath, className, ...props }) => {
-    const [size, d] = iconPaths[iconPath] as [number, string]
+    const [size, d] = iconPaths[iconPath] as [number, string];
     return (
         <span
             className={['xd-icon', className].join(' ')}
@@ -42,5 +42,4 @@ const iconPaths = {
     ChevronRightSmall: [12, "M5,9.8c-0.2,0-0.4-0.1-0.5-0.2c-0.3-0.3-0.3-0.8,0-1.1c0,0,0,0,0,0L6.9,6L4.5,3.5c-0.3-0.3-0.3-0.8,0-1.1 c0,0,0,0,0,0c0.3-0.3,0.8-0.3,1.1,0c0,0,0,0,0,0l3,3c0.3,0.3,0.3,0.8,0,1.1c0,0,0,0,0,0l-3,3C5.4,9.7,5.2,9.8,5,9.8z"],
     ChevronLeft: [12, "M8,11c0.3,0,0.5-0.1,0.7-0.3c0.4-0.4,0.4-1,0-1.4L5.4,6l3.3-3.3c0.4-0.4,0.4-1,0-1.4c-0.4-0.4-1-0.4-1.4,0 l-4,4c-0.4,0.4-0.4,1,0,1.4l4,4C7.5,10.9,7.7,11,8,11z"],
     ChevronLeftSmall: [12, "M8,9.8c0.2,0,0.4-0.1,0.5-0.2c0.3-0.3,0.3-0.8,0-1.1c0,0,0,0,0,0L6.1,6l2.5-2.5c0.3-0.3,0.3-0.8,0-1.1 c0,0,0,0,0,0c-0.3-0.3-0.8-0.3-1.1,0c0,0,0,0,0,0l-3,3c-0.3,0.3-0.3,0.8,0,1.1c0,0,0,0,0,0l3,3C7.6,9.7,7.8,9.8,8,9.8z"],
-}
-
+};

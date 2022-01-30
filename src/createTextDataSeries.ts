@@ -2,42 +2,44 @@ import { GraphicNode, RepeatGrid, RootNode, SceneNode, Text, Selection, SymbolIn
 
 export const createTextDataSeries = function (selection: Selection, root?: RootNode): RepeatGridTextDataSeries | undefined {
 
-    const selectedRepeatGridItem = selection.items[0]
+    const selectedRepeatGridItem = selection.items[0];
 
     // bubble up the SceneGraph, recording the guid of the parentNode and the index of the currentNode, stopping at the firstRepeatGrid
-    const findPathToRepeatGridAncestor = findPathToAncestorOfType<RepeatGrid>(selectedRepeatGridItem, RepeatGrid)
-    if (!findPathToRepeatGridAncestor) return // not a child of RepeatGrid
-    const { node: repeatGrid, indexPath: pathFromSelected } = findPathToRepeatGridAncestor
+    const findPathToRepeatGridAncestor = findPathToAncestorOfType<RepeatGrid>(selectedRepeatGridItem, RepeatGrid);
+    if (!findPathToRepeatGridAncestor)
+        return; // not a child of RepeatGrid
+    const { node: repeatGrid, indexPath: pathFromSelected } = findPathToRepeatGridAncestor;
 
     // traverse the selected repeatGrid child and set of Text Nodes 
-    const selectedRowIndex = pathFromSelected[0] || 0
-    const selectedRepeatCell = repeatGrid.children.at(selectedRowIndex)
-    if (!selectedRepeatCell) return
-    const leaves = getSceneNodeLeaves<Text>(selectedRepeatCell, [], Text)
+    const selectedRowIndex = pathFromSelected[0] || 0;
+    const selectedRepeatCell = repeatGrid.children.at(selectedRowIndex);
+    if (!selectedRepeatCell)
+        return; // selectedRowIndex was out of range
+    const leaves = getSceneNodeLeaves<Text>(selectedRepeatCell, [], Text);
 
     // transform leaves into textDataSeries
-    const textDataSeriesNodes: TextDataSeriesNode[] = []
+    const textDataSeriesNodes: TextDataSeriesNode[] = [];
     let cellLocation: CellLocation | undefined = undefined;
     leaves.forEach((leaf, columnIndex) => {
-        const textDataSeries: string[] = []
+        const textDataSeries: string[] = [];
         repeatGrid.children.forEach((repeatCell, rowIndex) => {
-            const textNode = findDescendentFromPath(repeatCell, leaf.indexPath) as Text
-            textDataSeries.push(textNode.text)
+            const textNode = findDescendentFromPath(repeatCell, leaf.indexPath) as Text;
+            textDataSeries.push(textNode.text);
             if (selectedRepeatGridItem instanceof Text && textNode.guid === selectedRepeatGridItem.guid) {
-                cellLocation = { columnIndex, rowIndex }
+                cellLocation = { columnIndex, rowIndex };
             }
         })
-        const name = (leaf.node).name // leaf.node.hasDefaultName may be useful?
+        const name = (leaf.node).name; // leaf.node.hasDefaultName may be useful?
         textDataSeriesNodes.push({
             ...leaf,
             name,
             textDataSeries
-        })
+        });
     });
 
-    return { textDataSeriesNodes, repeatGrid, cellLocation }
+    return { textDataSeriesNodes, repeatGrid, cellLocation };
 
-}
+};
 
 export interface RepeatGridTextDataSeries {
     repeatGrid: RepeatGrid,
@@ -70,74 +72,77 @@ function getSceneNodeLeaves<T extends GraphicNode = GraphicNode>(
 
     // check for RepeatGrid or Component instance
     if (boundaryTypes.find(BoundaryType => node instanceof BoundaryType) != null)
-        return []
+        return [];
 
     if (node.children.length === 0) {
-        const graphicNode = node as GraphicNode
+        const graphicNode = node as GraphicNode;
         // check for Text node
         if (graphicNode instanceof Type)
-            return [{ node: graphicNode as T, indexPath }]
+            return [{ node: graphicNode as T, indexPath }];
         else
-            return []
+            return [];
     }
 
-    const leaves: NodeAndPath<T>[][] = []
+    const leaves: NodeAndPath<T>[][] = [];
     node.children.forEachRight((node, ii) => {
-        const leaf = getSceneNodeLeaves<T>(node, [...indexPath, ii], Type)
-        leaves.push(leaf)
+        const leaf = getSceneNodeLeaves<T>(node, [...indexPath, ii], Type);
+        leaves.push(leaf);
     })
 
-    return leaves.flat()
+    return leaves.flat();
 }
 
 function findDescendentFromPath<T extends SceneNode = SceneNode>(
     node: SceneNode,
     indexPath: number[],
 ): T {
-    let currentNode = node
+    let currentNode = node;
     indexPath.forEach(childIndex => {
-        const currentChild = currentNode.children.at(childIndex)
+        const currentChild = currentNode.children.at(childIndex);
         if (currentChild)
-            currentNode = currentChild
-    })
-    return currentNode as T
+            currentNode = currentChild;
+    });
+    return currentNode as T;
 }
 
 function findPathToAncestorOfType<T extends SceneNode = SceneNode>(
     node: SceneNode,
     Type: (typeof SceneNode)
 ): NodeAndPath<T> | undefined {
-    let path: number[] = []
-    let activeNode: SceneNode | null = node
+    let path: number[] = [];
+    let activeNode: SceneNode | null = node;
     while (!(activeNode instanceof Type)) {
         if (activeNode == null)
-            return // no ancestor of type
-        path.push(indexOfChildInParent(activeNode))
-        activeNode = (activeNode as SceneNode).parent
+            return; // no ancestor of type
+        path.push(indexOfChildInParent(activeNode));
+        activeNode = (activeNode as SceneNode).parent;
     }
     return {
         node: activeNode as T,
         indexPath: path.reverse()
-    }
+    };
 }
 
 function indexOfChildInParent(
     childNode: SceneNode
 ): number {
-    let index = 0
+    let index = 0;
     childNode.parent?.children.some((child) => {
         if (child.guid === childNode.guid) {
-            return true
+            return true;
         } else {
-            index++
-            return false
+            index++;
+            return false;
         }
     })
-    return index
+    return index;
 }
 
 export function isInEditContext(selection: Selection, node: SceneNode | null): boolean {
-    if (node == null) return false
-    if (node.guid === selection.editContext.guid) return true
-    return isInEditContext(selection, node.parent)
+    if (node == null)
+        return false;
+    if (node.guid === selection.editContext.guid)
+        return true;
+    else
+        return isInEditContext(selection, node.parent);
 }
