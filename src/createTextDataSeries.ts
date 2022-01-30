@@ -1,10 +1,8 @@
-import { CommandHandler, GraphicNode, RepeatGrid, RootNode, SceneNode, Text, Selection, root } from "scenegraph";
+import { GraphicNode, RepeatGrid, RootNode, SceneNode, Text, Selection, SymbolInstance } from "scenegraph";
 
 export const createTextDataSeries = function (selection: Selection, root?: RootNode): RepeatGridTextDataSeries | undefined {
 
     const selectedRepeatGridItem = selection.items[0]
-    // TODO: return under better circumstances
-    if (!(selectedRepeatGridItem instanceof RepeatGrid || selectedRepeatGridItem instanceof Text)) return
 
     // bubble up the SceneGraph, recording the guid of the parentNode and the index of the currentNode, stopping at the firstRepeatGrid
     const findPathToRepeatGridAncestor = findPathToAncestorOfType<RepeatGrid>(selectedRepeatGridItem, RepeatGrid)
@@ -15,8 +13,7 @@ export const createTextDataSeries = function (selection: Selection, root?: RootN
     const selectedRowIndex = pathFromSelected[0]
     const selectedRepeatCell = repeatGrid.children.at(selectedRowIndex)
     if (!selectedRepeatCell) return
-    const leaves = getSceneNodeLeaves(selectedRepeatCell) as NodeAndPath<Text>[]
-    // console.log({ leaves });
+    const leaves = getSceneNodeLeaves<Text>(selectedRepeatCell, [], Text)
 
     // transform leaves into textDataSeries
     const textDataSeriesNodes: TextDataSeriesNode[] = []
@@ -30,7 +27,7 @@ export const createTextDataSeries = function (selection: Selection, root?: RootN
                 cellLocation = { columnIndex, rowIndex }
             }
         })
-        const name = (leaf.node as Text).name // leaf.node.hasDefaultName may be useful?
+        const name = (leaf.node).name // leaf.node.hasDefaultName may be useful?
         textDataSeriesNodes.push({
             ...leaf,
             name,
@@ -64,35 +61,46 @@ export interface NodeAndPath<T extends SceneNode = SceneNode> {
     indexPath: number[]
 }
 
-function getSceneNodeLeaves(
+function getSceneNodeLeaves<T extends GraphicNode = GraphicNode>(
     node: SceneNode,
-    indexPath: number[] = []
-): NodeAndPath<GraphicNode>[] {
-    // TODO: check for Text node
-    // TODO: check for Component instance
+    indexPath: number[] = [],
+    Type: (typeof GraphicNode) = GraphicNode,
+    boundaryTypes: (typeof SceneNode)[] = [RepeatGrid, SymbolInstance]
+): NodeAndPath<T>[] {
+
+    // TODO: check for RepeatGrid or Component instance
+    if (boundaryTypes.find(BoundaryType => node instanceof BoundaryType) != null)
+        return []
+
     if (node.children.length === 0) {
         const graphicNode = node as GraphicNode
-        return [{ node: graphicNode, indexPath }]
+        // TODO: check for Text node
+        if (graphicNode instanceof Type)
+            return [{ node: graphicNode as T, indexPath }]
+        else
+            return []
     }
-    const leaves: NodeAndPath<GraphicNode>[][] = []
+
+    const leaves: NodeAndPath<T>[][] = []
     node.children.forEachRight((node, ii) => {
-        const leaf = getSceneNodeLeaves(node, [...indexPath, ii])
+        const leaf = getSceneNodeLeaves<T>(node, [...indexPath, ii], Type)
         leaves.push(leaf)
     })
+
     return leaves.flat()
 }
 
-function findDescendentFromPath(
+function findDescendentFromPath<T extends SceneNode = SceneNode>(
     node: SceneNode,
     indexPath: number[],
-): SceneNode {
+): T {
     let currentNode = node
     indexPath.forEach(childIndex => {
         const currentChild = currentNode.children.at(childIndex)
         if (currentChild)
             currentNode = currentChild
     })
-    return currentNode
+    return currentNode as T
 }
 
 function findPathToAncestorOfType<T extends SceneNode = SceneNode>(
@@ -103,7 +111,7 @@ function findPathToAncestorOfType<T extends SceneNode = SceneNode>(
     let activeNode: SceneNode | null = node
     while (!(activeNode instanceof Type)) {
         if (activeNode == null)
-            break
+            return // no ancestor of type
         path.push(indexOfChildInParent(activeNode))
         activeNode = (activeNode as SceneNode).parent
     }

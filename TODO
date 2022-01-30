@@ -1,12 +1,16 @@
-- createTextDataSeries detects 
-  - or any node in RepeatGrid 
-  - is Node in Component? return
-  - is Path SceneNode?
-  - detects non Text Node in Leaves
-- test - bugs
+- test 
+  - add disabled style to SelectionPanel
+    - move `disabled={isInEditContext}` up
+  - add "No Text Nodes" warning
+  - disabled is sometimes white bg?
+- bugs
   - when text wraps 
     - make the actual text area width:9999px and scroll on overflow?
     - remove line numbers
 - refactor
   - split into smaller components
+  - delete unused code
+  - lint?
+  - comment
 - rename to "Repeat Grid Text Editor"
+- publish adobe-xd-types to npm...
