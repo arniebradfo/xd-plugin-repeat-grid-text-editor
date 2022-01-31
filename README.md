@@ -1,5 +1,5 @@
-# xd-plugin-repeat-grid-tabber
-Quickly tab through and edit text in a repeat grid in Adobe XD
+# xd-plugin-repeat-grid-text-editor
+Quickly edit text in Repeat Grids in Adobe XD
 
 ## Getting started
 - `yarn start` to run the repo in dev watch mode
