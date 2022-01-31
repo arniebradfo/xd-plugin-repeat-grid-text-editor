@@ -23,10 +23,9 @@ html, body {
 /* XD STYLES & COMPONENTS */
 
 .xd-detail {
-    /* https://spectrum.adobe.com/page/detail/ */
     font-size: 9px;
     letter-spacing: 1.2;
-    /* text-transform: uppercase; // doesn't work in uxp */
+    /* text-transform: uppercase; // doesn't work in uxp !? */
 }
 
 .xd-heading {
@@ -85,8 +84,8 @@ html, body {
     opacity: 0.6;
 }
 
+/* Xd doesn't actually use Adobe Clean !? */
 .uxp-plugin {
-    /* Xd doesn't actually use Adobe Clean */
     /* font-family: Adobe Clean, sans-serif; */
 }
 
@@ -269,7 +268,9 @@ html, body {
 
 .InfoWrapper {
     position: relative;
-    z-index: 9;
+
+    /* z-index doesn't work in UXP !? */
+    /* z-index: 9; */
 }
 
 .InfoWrapper:before {
@@ -279,7 +280,6 @@ html, body {
     right: -1rem;
     bottom: -1rem;
     left: -1rem;
-    /* background-color: hotpink; */
 }
 
 .InfoButton {
@@ -300,7 +300,7 @@ html, body {
     width: 280px;
     margin: 0.25rem 0;
 
-    /* neither of these work */
+    /* neither of these work !? */
     /* box-shadow: 0 0 0 1px rgb(16 22 26 / 10%),  0 2px 6px rgb(16 22 26 / 20%); */
     /* filter: drop-shadow(rgba(0, 0, 0, 0.15) 0px 1px 4px); */
 }

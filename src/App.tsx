@@ -10,17 +10,20 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
 
     const [repeatGridTextDataSeries, setRepeatGridTextDataSeries] = useState<RepeatGridTextDataSeries>();
     const [selectedCellLocation, setSelectedCellLocation] = useState<CellLocation>();
-    const [isInfoOpen, setIsInfoOpen] = useState<boolean>(false);
     const [shouldRetainFocus, setShouldRetainFocus] = useState<boolean>(false);
 
+    // setRepeatGridTextDataSeries when selection updates
     useEffect(() => {
+        // don't retain focus if a user selection changes
         setShouldRetainFocus(false);
         const _repeatGridTextDataSeries = createTextDataSeries(selection);
         setRepeatGridTextDataSeries(_repeatGridTextDataSeries);
         setSelectedCellLocation(_repeatGridTextDataSeries?.cellLocation);
     }, [selection.items[0]]);
 
+    // navigate to a new text node panel
     const selectTextNode = (index: number) => {
+        // retain the selection on navigation to a new text node
         setShouldRetainFocus(true);
         setSelectedCellLocation({
             columnIndex: index,
@@ -29,24 +32,34 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
         setRepeatGridTextDataSeries(createTextDataSeries(selection));
     };
 
+    // which text node are we editing
     const textDataSeriesNode = useMemo(() => (
         (repeatGridTextDataSeries == null || selectedCellLocation == null)
             ? undefined
             : repeatGridTextDataSeries.textDataSeriesNodes[selectedCellLocation.columnIndex]
     ), [repeatGridTextDataSeries, selectedCellLocation]);
+
+    // we can't edit text nodes that are outside the Edit Context
     const disabled = textDataSeriesNode ? !isInEditContext(selection, textDataSeriesNode.node) : true;
 
-    const navigateBack = () => setSelectedCellLocation(undefined);
+    // which panel to show // navigation state
     const showNoPanel = !repeatGridTextDataSeries;
     const showSelectionPanel = repeatGridTextDataSeries && selectedCellLocation == null;
     const showTextEditorPanel = repeatGridTextDataSeries && selectedCellLocation != null && textDataSeriesNode;
 
+    // navigation functions
     const nodeIndexes = showTextEditorPanel
         ? loopingPrevNextArrayIndex(repeatGridTextDataSeries.textDataSeriesNodes.length, selectedCellLocation.columnIndex)
         : undefined;
     const navigateNext = () => selectTextNode(nodeIndexes!.next);
     const navigatePrevious = () => selectTextNode(nodeIndexes!.previous);
+    const navigateBack = () => setSelectedCellLocation(undefined);
 
+    // The InfoButton and popover
+    // UXP doesn't support css z-index !?
+    // So... the element containing InfoButton2 needs to come last in the html
+    // ...but needs to be on top, so we use flex order to manage this in App.css
+    const [isInfoOpen, setIsInfoOpen] = useState<boolean>(false);
     const InfoButton2 = () => (
         <InfoButton
             isOpen={isInfoOpen}
@@ -56,7 +69,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
     );
 
     return (
-        <div className='App' >
+        <div className='App'>
 
             {showNoPanel && (
                 <div className='SelectionPanel-footer xd-hint'>

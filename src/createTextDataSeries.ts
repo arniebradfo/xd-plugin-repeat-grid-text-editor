@@ -1,5 +1,6 @@
 import { GraphicNode, RepeatGrid, RootNode, SceneNode, Text, Selection, SymbolInstance } from "scenegraph";
 
+// create data object that represents all Text DataSeries in a selected RepeatGrid 
 export const createTextDataSeries = function (selection: Selection, root?: RootNode): RepeatGridTextDataSeries | undefined {
 
     const selectedRepeatGridItem = selection.items[0];
@@ -63,6 +64,7 @@ export interface NodeAndPath<T extends SceneNode = SceneNode> {
     indexPath: number[]
 }
 
+// get the bottom most decedents of a SceneNode
 function getSceneNodeLeaves<T extends GraphicNode = GraphicNode>(
     node: SceneNode,
     indexPath: number[] = [],
@@ -74,6 +76,7 @@ function getSceneNodeLeaves<T extends GraphicNode = GraphicNode>(
     if (boundaryTypes.find(BoundaryType => node instanceof BoundaryType) != null)
         return [];
 
+    // if wer are at the bottom of the tree, return
     if (node.children.length === 0) {
         const graphicNode = node as GraphicNode;
         // check for Text node
@@ -83,6 +86,7 @@ function getSceneNodeLeaves<T extends GraphicNode = GraphicNode>(
             return [];
     }
 
+    // if there are children, recurse...
     const leaves: NodeAndPath<T>[][] = [];
     node.children.forEachRight((node, ii) => {
         const leaf = getSceneNodeLeaves<T>(node, [...indexPath, ii], Type);
@@ -92,6 +96,7 @@ function getSceneNodeLeaves<T extends GraphicNode = GraphicNode>(
     return leaves.flat();
 }
 
+// navigate the decedents of a node to find a specific node
 function findDescendentFromPath<T extends SceneNode = SceneNode>(
     node: SceneNode,
     indexPath: number[],
@@ -105,12 +110,14 @@ function findDescendentFromPath<T extends SceneNode = SceneNode>(
     return currentNode as T;
 }
 
+// return the closest ancestor of a specified type, and return the index path to it
 function findPathToAncestorOfType<T extends SceneNode = SceneNode>(
     node: SceneNode,
     Type: (typeof SceneNode)
 ): NodeAndPath<T> | undefined {
     let path: number[] = [];
     let activeNode: SceneNode | null = node;
+    // loop over ancestors and record path
     while (!(activeNode instanceof Type)) {
         if (activeNode == null)
             return; // no ancestor of type
@@ -119,10 +126,12 @@ function findPathToAncestorOfType<T extends SceneNode = SceneNode>(
     }
     return {
         node: activeNode as T,
-        indexPath: path.reverse()
+        // reverse path so we can find original node again
+        indexPath: path.reverse() 
     };
 }
 
+// 
 function indexOfChildInParent(
     childNode: SceneNode
 ): number {
@@ -138,6 +147,7 @@ function indexOfChildInParent(
     return index;
 }
 
+// can a SceneNode be edited
 export function isInEditContext(selection: Selection, node: SceneNode | null): boolean {
     if (node == null)
         return false;
