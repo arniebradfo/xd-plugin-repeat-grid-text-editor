@@ -33,7 +33,6 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "@adobexd/typings": "AdobeXD/typings#master",
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
@@ -43,6 +42,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "@types/react": "^16.8.19",
     "@types/react-dom": "^16.8.4",
+    "adobexd-types": "^47.0.0",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.0.0",
     "file-loader": "^4.0.0",
