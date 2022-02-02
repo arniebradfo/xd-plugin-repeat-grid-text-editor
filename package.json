@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
     "start": "yarn run dev",
-    "build": "webpack --mode development",
+    "build": "yarn build:app && yarn build:package",
+    "build:app": "webpack --mode development",
+    "build:package": "zip repeat-grid-text-editor.xdx main.js images/* manifest.json",
     "dev": "nodemon -w src -e ts,tsx,json,css -w webpack.config.js -x yarn build",
     "type-check": "tsc --noEmit",
     "type-check:watch": "yarn type-check --watch"
