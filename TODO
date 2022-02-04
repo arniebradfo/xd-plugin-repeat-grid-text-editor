@@ -1,6 +1,6 @@
-- rename to "Repeat Grid Text Editor"
-- publish adobe-xd-types to npm and import 
-
+- publish to Adobe
+  - https://www.adobe.io/xd/uxp/distribution/submission-checklist/
+  - https://developer.adobe.com/console/projects/276523/4566206088344728545/plugins/9e5e29a9/distribute/submit
 
 - test (anything else?)
   - lint?
