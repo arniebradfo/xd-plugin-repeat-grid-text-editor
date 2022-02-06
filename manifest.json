@@ -1,8 +1,8 @@
 {
-    "id": "9e5e29a9",
+    "id": "000000",
     "name": "Repeat Grid Text Editor",
-    "version": "0.1.0",
-    "description": "Quickly edit text in Repeat Grids",
+    "version": "1.0.0",
+    "description": "Edit all text in one input",
     "summary": "Quickly edit all Repeat Grid Text objects as a single text field.",
     "languages": [
         "en"
@@ -11,12 +11,12 @@
     "helpUrl": "https://github.com/arniebradfo/xd-plugin-repeat-grid-text-editor",
     "host": {
         "app": "XD",
-        "minVersion": "13.0"
+        "minVersion": "45.0"
     },
     "uiEntryPoints": [
         {
             "type": "panel",
-            "label": "Text Data Series Editor",
+            "label": "Repeat Grid Text Editor",
             "panelId": "app"
         }
     ],
@@ -24,12 +24,17 @@
         {
             "width": 48,
             "height": 48,
-            "path": "images/logo.png"
+            "path": "images/logo@1x.png"
         },
         {
-            "width": 24,
-            "height": 24,
-            "path": "images/logo.png"
+            "width": 96,
+            "height": 96,
+            "path": "images/logo@2x.png"
+        },
+        {
+            "width": 192,
+            "height": 192,
+            "path": "images/logo@4x.png"
         }
     ]
 }

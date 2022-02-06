@@ -5,6 +5,11 @@
 - test (anything else?)
   - lint?
 - bugs
+  - layout
+    - next and previous buttons should stack correctly
+    - what happens when titles are too long...
+    - what happens when row items are too long...
+    - instruction text max-width and stacking
   - disabled textarea is sometimes white bg?
   - when text wraps 
     - make the actual text area width:9999px and scroll on overflow?
