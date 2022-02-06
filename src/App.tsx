@@ -83,13 +83,13 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                     <div className='SelectionPanel-list'>
                         <div className='SelectionPanel-list-item SelectionPanel-list-item-repeatgrid'>
                             <Icon iconPath='RepeatGrid' className='SelectionPanel-list-item-icon' />
-                            <span className='SelectionPanel-list-item-name'>
+                            <span className='SelectionPanel-list-item-name util-ellipsis'>
                                 {repeatGridTextDataSeries.repeatGrid.name}
                             </span>
                         </div>
                         {repeatGridTextDataSeries.textDataSeriesNodes.length === 0 && (
                             <div className='SelectionPanel-list-item SelectionPanel-list-item-textobject disabled' >
-                                <span className='SelectionPanel-list-item-name xd-hint' >
+                                <span className='SelectionPanel-list-item-name xd-hint util-ellipsis' >
                                     No Text Objects
                                 </span>
                             </div>
@@ -104,6 +104,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                                 <span
                                     className={[
                                         'SelectionPanel-list-item-name',
+                                        'util-ellipsis',
                                         isInEditContext(selection, textDataSeriesNode.node) ? undefined : 'disabled'
                                     ].join(' ')}
                                 >
@@ -132,7 +133,7 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
             {showTextEditorPanel && (
                 <div className='TextEditorPanel'>
 
-                    <div className='TextEditorPanel-header xd-heading'>
+                    <div className='TextEditorPanel-header xd-heading util-ellipsis'>
                         {repeatGridTextDataSeries.textDataSeriesNodes[nodeIndexes!.current].name}
                     </div>
 
@@ -158,9 +159,9 @@ export const App: XdReactComponent = ({ selection, root, ...props }) => {
                             <Icon iconPath='ChevronLeftSmall' />
                             <span className='text'>{'Previous'}</span>
                         </div>
-                        <span className='xd-hint'>Shift+Tab</span>
+                        <span className='xd-hint util-ellipsis'>Shift+Tab</span>
                         <div className='flex-splitter' />
-                        <span className='xd-hint'>Tab</span>
+                        <span className='xd-hint util-ellipsis'>Tab</span>
                         <div className='xd-button xd-button--outlined' onClick={navigateNext}>
                             <span className='text'>{'Next'}</span>
                             <Icon iconPath='ChevronRightSmall' />

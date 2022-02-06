@@ -89,6 +89,13 @@ html, body {
     /* font-family: Adobe Clean, sans-serif; */
 }
 
+.util-ellipsis {
+    /* display: flex; */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 
 /* SELECTION PANEL */
 
@@ -199,6 +206,16 @@ html, body {
     order: 4;
 }
 
+.TextEditorPanel-footer-set-right {
+    display: flex;
+    /* flex-wrap: wrap-reverse; */
+}
+
+.TextEditorPanel-footer-set-left {
+    display: flex;
+    /* flex-wrap: wrap; */
+}
+
 .TextEditorPanel-footer .xd-hint {
     margin: 0 0.5rem;
 }
@@ -298,7 +315,8 @@ html, body {
     border: 1px solid #cfcfcf;
     font-size: 14px;
     width: 280px;
-    margin: 0.25rem 0;
+    max-width: calc(100vw - 1rem);
+    margin: 0.25rem -0.25rem;
 
     /* neither of these work !? */
     /* box-shadow: 0 0 0 1px rgb(16 22 26 / 10%),  0 2px 6px rgb(16 22 26 / 20%); */
@@ -312,14 +330,13 @@ html, body {
 
 .InfoPanel-grid {
     display: flex;
-    margin-bottom: 0.25rem;
-}
-
-.InfoPanel-grid span {
-    white-space: nowrap;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
 }
 
 .InfoPanel-grid-command {
     width: 80px;
     flex: 0 0 auto;
 }
+
+.InfoPanel-grid span {}
