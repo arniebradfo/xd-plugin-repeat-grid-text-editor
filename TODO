@@ -5,7 +5,6 @@
 - test (anything else?)
   - lint?
 - bugs
-  - restore special character on newline...
   - disabled textarea is sometimes white bg?
   - when text wraps 
     - make the actual text area width:9999px and scroll on overflow?

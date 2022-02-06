@@ -31,7 +31,10 @@ export const TextEditor: FC<TextEditorPanelProps> = ({
 
     useEffect(() => {
         const { textDataSeries } = textDataSeriesNode;
-        setValue(textDataSeries.join('\n')); // join the textDataSeries into a value with newlines 
+        let textValue = textDataSeries
+            .map(text => text.replace(/\r/ig, '\r└')) // add "└" to mark \r newlines in the editor
+            .join('\n'); // join the textDataSeries into a value with newlines 
+        setValue(textValue); 
     }, [selection.items[0], setValue, textDataSeriesNode]);
 
     const textUpdated: ChangeEventHandler<HTMLTextAreaElement> = (event) => {
